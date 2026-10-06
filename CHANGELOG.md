@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Security: the MCP takes the session's folder from its own working folder, not from `CLAUDE_PROJECT_DIR` (a repository's settings could set it and pass for one of your projects).
+- Security: in a folder, only a complete claude.ai export (`conversations.json` with `users.json`) is taken, and exports over 2 GB aren't read; a bad export shows no conversations instead of an error.
+- Security: the key in the address Beryl opens works once; the browser keeps a separate session secret.
+- Graph legend: folder names are escaped.
+
 ## 0.8.0 (2026-10-06)
 
 - `web/vendor/CHECKSUMS.json` lists the SHA-256 of the bundled libraries (d3 7.9.0, three.js 0.147.0) and fonts; a test checks them, and `scripts/vendor.sh` rebuilds the libraries from the official npm releases.

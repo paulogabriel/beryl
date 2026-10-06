@@ -86,6 +86,9 @@ python3 beryl.py --config demo/beryl.json serve
 - Gravações só aceitam JSON da própria página do Beryl, até 64 KB, e só o status de notas de projeto graváveis.
 - Títulos, resumos e primeiros pedidos passam por um filtro que mascara chaves de API, tokens e chaves privadas.
 - O MCP só mostra a outras sessões as notas de projeto e as conversas já organizadas, e nada das áreas em `mcp_hidden_areas` (por padrão `personal` e `pessoal`). Conversas sem organização ficam de fora.
+- A pasta da sessão é a pasta de trabalho do próprio servidor MCP, não o `CLAUDE_PROJECT_DIR`, que um repositório poderia definir nas próprias configurações.
+- A chave no endereço que o Beryl abre vale uma vez: um endereço que ficou no histórico do navegador não abre nada.
+- Quando a exportação configurada é uma pasta (como Downloads), só conta uma exportação completa do claude.ai (`conversations.json` com `users.json`), então um arquivo que algum site jogue ali não vira a sua exportação. Exportações acima de 2 GB não são lidas.
 - `beryl_save_session` só grava no projeto da pasta real da sessão: um README malicioso num repositório qualquer não faz o Claude escrever no registro de outro projeto. O que o Beryl devolve ao Claude vem marcado como dado, não como instrução.
 - Resumos de sessão são gravados em uma linha só, sem links, imagens, HTML ou `%%`.
 - Servidor, MCP e hooks gravam sob uma trava de arquivo compartilhada.
