@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.9.0 (2026-10-06)
+
 - New `/beryl:week` skill (and `beryl.py week --days N`): a recap of the last days by project, from session logs and conversations.
 - The dashboard counts the claude.ai conversations still unsorted and suggests `/beryl:organize`.
 - Screenshots in the README (from the demo, light and dark).
