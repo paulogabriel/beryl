@@ -128,6 +128,8 @@
     "no_backlinks": "No notes link here.",
     "export_old_title": "claude.ai export",
     "export_old": {"one": "Your newest claude.ai conversation here is from {date} ({n} day ago). For recent ones, ask for a new export: claude.ai › Settings › Privacy › Export data.", "other": "Your newest claude.ai conversation here is from {date} ({n} days ago). For recent ones, ask for a new export: claude.ai › Settings › Privacy › Export data."},
+    "unsorted_title": "Unsorted conversations",
+    "unsorted": {"one": "{n} claude.ai conversation has no project or area yet. To sort it, run /beryl:organize in Claude Code.", "other": "{n} claude.ai conversations have no project or area yet. To sort them, run /beryl:organize in Claude Code."},
     "no_daily": "No daily notes yet.",
     "no_status": "no status",
     "no_webgl": "This browser couldn't open {view} (WebGL). Back to 2D.",

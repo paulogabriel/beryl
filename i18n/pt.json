@@ -124,6 +124,8 @@
     "no_backlinks": "Nenhuma nota aponta para esta.",
     "export_old_title": "Exportação do claude.ai",
     "export_old": {"one": "A conversa mais recente do claude.ai aqui é de {date} (há {n} dia). Para ver as recentes, peça uma nova exportação: claude.ai › Configurações › Privacidade › Exportar dados.", "other": "A conversa mais recente do claude.ai aqui é de {date} (há {n} dias). Para ver as recentes, peça uma nova exportação: claude.ai › Configurações › Privacidade › Exportar dados."},
+    "unsorted_title": "Conversas sem organização",
+    "unsorted": {"one": "{n} conversa do claude.ai ainda está sem projeto ou área. Para organizar, rode /beryl:organize no Claude Code.", "other": "{n} conversas do claude.ai ainda estão sem projeto ou área. Para organizar, rode /beryl:organize no Claude Code."},
     "no_daily": "Nenhuma daily note ainda.",
     "no_status": "sem status",
     "no_webgl": "Este navegador não conseguiu abrir {view} (WebGL). Voltei para o 2D.",

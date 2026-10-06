@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- New `/beryl:week` skill (and `beryl.py week --days N`): a recap of the last days by project, from session logs and conversations.
+- The dashboard counts the claude.ai conversations still unsorted and suggests `/beryl:organize`.
+- Screenshots in the README (from the demo, light and dark).
+- README in Portuguese brought up to date with the security changes.
+
 ## 0.8.0 (2026-10-06)
 
 - `web/vendor/CHECKSUMS.json` lists the SHA-256 of the bundled libraries (d3 7.9.0, three.js 0.147.0) and fonts; a test checks them, and `scripts/vendor.sh` rebuilds the libraries from the official npm releases.
