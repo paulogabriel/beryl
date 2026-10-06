@@ -1,0 +1,8 @@
+{
+  "notes": "~/Documents/My notes",
+  "claude_export": "~/Downloads",
+  "write_notes": false,
+  "language": "auto",
+  "port": 8765,
+  "exclude": ["Templates"]
+}

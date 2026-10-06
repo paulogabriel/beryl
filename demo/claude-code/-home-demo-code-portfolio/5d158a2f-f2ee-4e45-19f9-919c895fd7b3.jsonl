@@ -1,0 +1,2 @@
+{"type": "user", "cwd": "/home/demo/code/portfolio", "timestamp": "2026-08-23T09:00:00Z", "sessionId": "5d158a2f-f2ee-4e45-19f9-919c895fd7b3", "message": {"role": "user", "content": "Add a dark mode toggle to the site"}}
+{"type": "assistant", "cwd": "/home/demo/code/portfolio", "timestamp": "2026-08-23T09:00:00Z", "sessionId": "5d158a2f-f2ee-4e45-19f9-919c895fd7b3", "message": {"role": "assistant", "content": [{"type": "text", "text": "Done."}]}}

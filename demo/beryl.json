@@ -1,0 +1,24 @@
+{
+  "notes": "demo/notes",
+  "claude_export": "demo/claude-export.zip",
+  "claude_code": "demo/claude-code",
+  "organize_file": "../organize.json",
+  "galaxy_core": "_projects",
+  "user_name": "Demo",
+  "statuses": [
+    "active",
+    "in progress",
+    "paused",
+    "ongoing",
+    "idea",
+    "done",
+    "dropped"
+  ],
+  "area_order": [
+    "work",
+    "side projects",
+    "learning",
+    "writing"
+  ],
+  "language": "auto"
+}

@@ -1,0 +1,4 @@
+{"type": "user", "cwd": "/home/demo/code/portfolio", "timestamp": "2026-08-24T09:00:00Z", "sessionId": "58ee8571-f499-8d7c-4093-f6dea268aa87", "message": {"role": "user", "content": "Speed up the build script"}}
+{"type": "assistant", "cwd": "/home/demo/code/portfolio", "timestamp": "2026-08-24T09:00:00Z", "sessionId": "58ee8571-f499-8d7c-4093-f6dea268aa87", "message": {"role": "assistant", "content": [{"type": "text", "text": "Done."}]}}
+{"type": "user", "cwd": "/home/demo/code/portfolio", "timestamp": "2026-08-24T09:12:00Z", "sessionId": "58ee8571-f499-8d7c-4093-f6dea268aa87", "message": {"role": "user", "content": "Looks good, go ahead."}}
+{"type": "assistant", "cwd": "/home/demo/code/portfolio", "timestamp": "2026-08-24T09:12:00Z", "sessionId": "58ee8571-f499-8d7c-4093-f6dea268aa87", "message": {"role": "assistant", "content": [{"type": "text", "text": "Done."}]}}

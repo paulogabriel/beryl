@@ -1,0 +1,7 @@
+{
+  "hooks": {
+    "SessionStart": [{ "hooks": [{ "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/beryl_hook.py\"", "timeout": 10 }] }],
+    "PreCompact": [{ "hooks": [{ "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/beryl_hook.py\"", "timeout": 30 }] }],
+    "SessionEnd": [{ "hooks": [{ "type": "command", "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/beryl_hook.py\"", "timeout": 30 }] }]
+  }
+}

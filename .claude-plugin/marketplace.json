@@ -1,0 +1,8 @@
+{
+  "name": "beryl",
+  "owner": { "name": "paulogabriel", "url": "https://github.com/paulogabriel" },
+  "description": "Beryl: a local dashboard of your work with Claude.",
+  "plugins": [
+    { "name": "beryl", "source": ".", "description": "A local dashboard of your Claude Code sessions, claude.ai conversations and notes, with project context for every session." }
+  ]
+}

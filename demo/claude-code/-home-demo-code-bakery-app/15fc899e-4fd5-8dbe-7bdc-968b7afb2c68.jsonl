@@ -1,0 +1,2 @@
+{"type": "user", "cwd": "/home/demo/code/bakery-app", "timestamp": "2026-09-22T09:00:00Z", "sessionId": "15fc899e-4fd5-8dbe-7bdc-968b7afb2c68", "message": {"role": "user", "content": "Write tests for the order total"}}
+{"type": "assistant", "cwd": "/home/demo/code/bakery-app", "timestamp": "2026-09-22T09:00:00Z", "sessionId": "15fc899e-4fd5-8dbe-7bdc-968b7afb2c68", "message": {"role": "assistant", "content": [{"type": "text", "text": "Done."}]}}

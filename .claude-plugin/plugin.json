@@ -1,0 +1,57 @@
+{
+  "name": "beryl",
+  "displayName": "Beryl",
+  "version": "0.8.0",
+  "description": "A local dashboard of your work with Claude: Claude Code sessions, your claude.ai data export and, optionally, a folder of notes. Gives every Claude Code session the context of its project.",
+  "author": {
+    "name": "paulogabriel",
+    "url": "https://github.com/paulogabriel"
+  },
+  "repository": "https://github.com/paulogabriel/beryl",
+  "license": "MIT",
+  "keywords": [
+    "dashboard",
+    "claude.ai",
+    "obsidian",
+    "notes",
+    "sessions",
+    "mcp"
+  ],
+  "userConfig": {
+    "claude_code": {
+      "type": "boolean",
+      "title": "Read Claude Code sessions",
+      "description": "Show your Claude Code sessions (from ~/.claude/projects) and group them into projects.",
+      "default": true
+    },
+    "claude_export": {
+      "type": "string",
+      "title": "claude.ai data export",
+      "description": "Optional. The .zip from claude.ai (Settings > Privacy > Export data), its conversations.json, or a folder that receives the exports, such as Downloads (the newest one is used).",
+      "default": ""
+    },
+    "notes_dir": {
+      "type": "directory",
+      "title": "Notes folder",
+      "description": "Optional. An Obsidian vault or any folder of markdown notes. Notes with type: project become projects."
+    },
+    "language": {
+      "type": "string",
+      "title": "Language",
+      "description": "Language of the dashboard and of what Beryl writes in your notes: auto (your system's) or a code such as en or pt. Languages Beryl doesn't have yet fall back to English.",
+      "default": "auto"
+    },
+    "write_notes": {
+      "type": "boolean",
+      "title": "Write to project notes",
+      "description": "Let Beryl change the status of project notes and add session summaries to them. Off: summaries stay in Beryl's own data.",
+      "default": false
+    },
+    "mcp_only_projects": {
+      "type": "boolean",
+      "title": "Beryl only in my projects",
+      "description": "Claude sessions get Beryl's context only in your projects' folders and in the notes folder. Off: in any folder, including repositories cloned from others.",
+      "default": false
+    }
+  }
+}

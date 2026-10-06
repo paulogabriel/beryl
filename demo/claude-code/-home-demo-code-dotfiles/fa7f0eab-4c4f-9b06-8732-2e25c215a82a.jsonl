@@ -1,0 +1,2 @@
+{"type": "user", "cwd": "/home/demo/code/dotfiles", "timestamp": "2026-08-21T09:00:00Z", "sessionId": "fa7f0eab-4c4f-9b06-8732-2e25c215a82a", "message": {"role": "user", "content": "Set up a git alias for pretty logs"}}
+{"type": "assistant", "cwd": "/home/demo/code/dotfiles", "timestamp": "2026-08-21T09:00:00Z", "sessionId": "fa7f0eab-4c4f-9b06-8732-2e25c215a82a", "message": {"role": "assistant", "content": [{"type": "text", "text": "Done."}]}}

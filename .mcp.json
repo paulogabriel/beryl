@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "beryl": {
+      "command": "python3",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/beryl_mcp.py"],
+      "env": {
+        "BERYL_CLAUDE_CODE": "${user_config.claude_code}",
+        "BERYL_CLAUDE_EXPORT": "${user_config.claude_export}",
+        "BERYL_NOTES_DIR": "${user_config.notes_dir}",
+        "BERYL_WRITE_NOTES": "${user_config.write_notes}",
+        "BERYL_LANGUAGE": "${user_config.language}"
+      }
+    }
+  }
+}

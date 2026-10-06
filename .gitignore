@@ -1,0 +1,10 @@
+# configuração local (caminho do vault)
+/beryl.json
+# dados pessoais: exportação do claude.ai etc.
+data/
+# arquivos gerados
+*.html
+!web/index.html
+*.beryl-tmp
+__pycache__/
+.DS_Store

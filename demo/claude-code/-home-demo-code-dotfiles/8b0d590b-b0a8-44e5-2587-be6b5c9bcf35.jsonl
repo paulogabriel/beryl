@@ -1,0 +1,2 @@
+{"type": "user", "cwd": "/home/demo/code/dotfiles", "timestamp": "2026-08-04T09:00:00Z", "sessionId": "8b0d590b-b0a8-44e5-2587-be6b5c9bcf35", "message": {"role": "user", "content": "Clean up my zsh config"}}
+{"type": "assistant", "cwd": "/home/demo/code/dotfiles", "timestamp": "2026-08-04T09:00:00Z", "sessionId": "8b0d590b-b0a8-44e5-2587-be6b5c9bcf35", "message": {"role": "assistant", "content": [{"type": "text", "text": "Done."}]}}
