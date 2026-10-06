@@ -353,7 +353,7 @@ function nodeColor(n){
   if (!n.project) return m.outro;
   return gState.color === "origem" ? (m[orig(n)] || m.outro) : m[bucket(n.status)];
 }
-function renderLegend(){ $("legend").innerHTML = LEG[gState.color].map(([k, l]) => `<span><i style="background:${COLORS[gState.color][k]}"></i>${l}</span>`).join(""); }
+function renderLegend(){ $("legend").innerHTML = LEG[gState.color].map(([k, l]) => `<span><i style="background:${COLORS[gState.color][k]}"></i>${esc(l)}</span>`).join(""); }
 /* the most recent conversation with Claude (claude.ai or Code), by exact time */
 function latestConvId(){
   let best = null;

@@ -86,10 +86,13 @@ python3 beryl.py --config demo/beryl.json serve
 - The server listens only on `127.0.0.1` and answers only requests addressed to it (`Host` and `Origin` checks), which blocks DNS rebinding. Other sites can't read your data or embed the dashboard (CSP with `frame-ancestors 'none'`).
 - Each run of the server has its own secret key. The browser Beryl opens receives it as a cookie; other programs on the computer that reach `127.0.0.1` get no data without it.
 - The data folder (with the claude.ai export and the key) is readable only by your user.
+- The key in the address Beryl opens works once: an address left in the browser history opens nothing.
+- When the export setting is a folder (such as Downloads), only a complete claude.ai export counts (`conversations.json` with `users.json`), so a file some site drops there isn't taken as your export. Exports over 2 GB aren't read.
 - The server stops by itself after `idle_minutes` (2 hours) with no open dashboard; `/beryl:dashboard` starts it again.
 - Writes accept only JSON from Beryl's own page, up to 64 KB, and only the status of writable project notes.
 - Titles, summaries and first requests pass through a filter that masks API keys, tokens and private keys. The filter works by known formats: a loose password or a token in an unusual format can get through, so don't count on it as the only protection.
 - The MCP shows other sessions only project notes and conversations already sorted, and nothing from the areas in `mcp_hidden_areas` (by default `personal` and `pessoal`). Unsorted conversations stay out.
+- The session's folder is the MCP server's own working folder, not `CLAUDE_PROJECT_DIR`, which a repository could set in its own settings.
 - `beryl_save_session` only writes to the project of the session's real folder: a malicious README in some repository can't make Claude write into another project's log. What Beryl returns to Claude is marked as data, not instructions.
 - Session summaries are written as a single line, without links, images, HTML or `%%`.
 - The server, the MCP and the hooks write under a shared file lock.

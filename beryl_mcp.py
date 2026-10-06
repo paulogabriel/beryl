@@ -48,7 +48,7 @@ TOOLS = [
 
 
 def session_dir(args):
-    return args.get("folder") or os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
+    return args.get("folder") or bridge.session_folder()
 
 
 OFF_HERE = ("Beryl is turned off in this folder: it isn't linked to any of {owner}'s projects "

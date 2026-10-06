@@ -78,8 +78,9 @@ def find_project(notes, nome=None, pasta=None):
 
 
 def session_folder():
-    """The folder Claude Code was opened in (never a folder the model passes)."""
-    return os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
+    """The folder Claude Code was opened in: the MCP server's working folder. Never a folder the model
+    passes, nor CLAUDE_PROJECT_DIR, which a repository's own .claude/settings.json could set through `env`."""
+    return os.getcwd()
 
 
 def allowed_here(cfg, notes):
