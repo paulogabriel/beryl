@@ -1080,6 +1080,34 @@ def organize_set(cfg, changes):
     return done
 
 
+# ---------- what happened in a period (used by the /beryl:week skill) ----------
+
+LOG_LINE = re.compile(r"^- (\d{4}-\d{2}-\d{2}): (.+)$", re.M)
+
+
+def activity(cfg, days=7):
+    """Projects with activity in the last `days`: session log lines, conversations and notes, plus unsorted conversations."""
+    since = (dt.date.today() - dt.timedelta(days=days)).isoformat()
+    items, log = collect(cfg), session_log()
+    in_period = lambda x: (x.get("last") or "") >= since
+    convs = [x for x in items if x["kind"] in ("chat", "code") and in_period(x)]
+    out = []
+    for p in sorted((x for x in items if x["project"]), key=lambda x: x.get("last") or "", reverse=True):
+        lines = LOG_LINE.findall(p.get("body") or "") + [m for line in log.get(p["id"], []) for m in LOG_LINE.findall(line)]
+        sessions = sorted({(d, redact(t)) for d, t in lines if d >= since})
+        mine = [c for c in convs if p["id"] in c["links"]]
+        notes = [x for x in items if not x["project"] and x["kind"] not in ("chat", "code", "daily") and p["id"] in x["links"] and in_period(x)]
+        if sessions or mine:                 # notes alone don't count: index notes link to every project
+            out.append({"project": p["title"], "status": p["status"], "area": p["area"],
+                        "sessions": [f"{d}: {t}" for d, t in sessions],
+                        "conversations": [{"date": c["last"], "kind": c["kind"], "title": c["title"], "summary": short(c["summary"], 160)} for c in sorted(mine, key=lambda c: c["last"])],
+                        "notes": [x["title"] for x in notes]})
+    loose = [c for c in convs if not c["links"]]
+    return {"since": since, "until": dt.date.today().isoformat(), "projects": out,
+            "other_conversations": [{"date": c["last"], "kind": c["kind"], "area": c["area"], "title": c["title"]} for c in sorted(loose, key=lambda c: c["last"])],
+            "dailies": [{"date": x["last"], "summary": short(x["summary"], 200)} for x in items if x["kind"] == "daily" and in_period(x)]}
+
+
 def open_dashboard(cfg):
     """Starts the server in the background, if it isn't running yet, and opens the browser."""
     import subprocess
@@ -1127,6 +1155,8 @@ def main():
     o = sub.add_parser("organize", help="list unsorted conversations, or save their sorting (JSON on standard input)")
     o.add_argument("action", choices=["list", "set"])
     o.add_argument("--limit", type=int, default=60)
+    w = sub.add_parser("week", help="what happened in the last days, by project (JSON)")
+    w.add_argument("--days", type=int, default=7)
     b = sub.add_parser("build", help="build a single read-only HTML file")
     b.add_argument("-o", "--out", default="beryl.html")
     args = p.parse_args()
@@ -1138,6 +1168,8 @@ def main():
         serve(cfg, open_browser=not args.no_open, args={"config": args.config, "notes": args.notes})
     elif args.cmd == "open":
         open_dashboard(cfg)
+    elif args.cmd == "week":
+        print(json.dumps(activity(cfg, args.days), ensure_ascii=False, indent=1))
     elif args.cmd == "organize":
         if args.action == "list":
             print(json.dumps(organize_list(cfg, args.limit), ensure_ascii=False, indent=1))
