@@ -4,6 +4,12 @@ A local dashboard of your work with Claude, installed as a Claude Code plugin.
 
 [Português](README.pt-BR.md)
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/galaxy-dark.png">
+  <img src="docs/galaxy-light.png" alt="The Galaxy view: each arm is an area, each star a conversation with Claude">
+</picture>
+
+
 Beryl reads three sources, all optional:
 
 - **Claude Code sessions** (`~/.claude/projects`), grouped into projects by git repository.
@@ -16,6 +22,12 @@ It shows them in your browser, on your own machine:
 - **Graph:** notes, projects and links in 2D, 3D, or as a **Galaxy**, where each arm is an area and every conversation with Claude is a star. The latest session pulses.
 - **Timeline:** one bar per project, with your daily notes on the axis.
 - **Reader:** any note, conversation or session, with backlinks and the conversations linked to each project.
+
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/dashboard-dark.png">
+  <img src="docs/dashboard-light.png" alt="The dashboard: projects by area, with status, origin and conversations">
+</picture>
 
 It also gives every Claude Code session the context of its project, through an MCP server: what the project is, its status, the decisions and what was already discussed. At the end of a session, Claude saves a one-line summary to the project's session log.
 
@@ -53,6 +65,7 @@ Start a new Claude Code session after installing, so the MCP server and the hook
 | `/beryl:dashboard` | Opens the dashboard in your browser. The server keeps running in the background and the page updates by itself. The first time, Claude Code asks permission to run `python3`: that's Beryl's local server starting. |
 | `/beryl:save` | Saves a short summary of the session to the project's session log. |
 | `/beryl:organize` | Sorts your claude.ai conversations: Claude proposes a project or a topic area for each one and saves after you approve. |
+| `/beryl:week` | A recap of the last 7 days (or `/beryl:week 14`), by project: what moved forward, decisions and what's pending. |
 
 Without any command, Claude calls `beryl_context` when you start working on a project. When a session ends or you run `/compact`, a hook writes an automatic entry if nobody saved one.
 

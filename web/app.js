@@ -191,8 +191,14 @@ function renderExportNotice(){
   box.hidden = !(META.editable && META.sources.claude_export && META.exportWarnDays > 0 && newest && days > META.exportWarnDays);
   if (!box.hidden) box.innerHTML = `<h3>${t("export_old_title")}</h3><p>${t("export_old", {n: days, date: fmt(newest)})}</p>`;
 }
+/* claude.ai conversations still without area or project: suggests /beryl:organize */
+function renderUnsortedNotice(){
+  const box = $("unsortedNotice"), n = DATA.filter(x => x.kind === "chat" && !x.area && !x.links.length).length;
+  box.hidden = !(META.editable && n);
+  if (n) box.innerHTML = `<h3>${t("unsorted_title")}</h3><p>${t("unsorted", {n})}</p>`;
+}
 function renderAside(){
-  renderExportNotice();
+  renderExportNotice(); renderUnsortedNotice();
   $("boxDailies").hidden = $("boxConfirm").hidden = !META.sources.notes;
   $("boxClaude").hidden = !META.claudeFolder;
   const d = DATA.filter(n => n.kind === "daily").sort(byLast).slice(0, 5);

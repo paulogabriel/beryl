@@ -4,6 +4,12 @@ Um painel local do seu trabalho com o Claude, instalado como plugin do Claude Co
 
 [English](README.md)
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/galaxy-dark.png">
+  <img src="docs/galaxy-light.png" alt="A vista Galaxy: cada braço é uma área, cada estrela uma conversa com o Claude">
+</picture>
+
+
 O Beryl lê três fontes, todas opcionais:
 
 - **Sessões do Claude Code** (`~/.claude/projects`), agrupadas em projetos por repositório git.
@@ -16,6 +22,11 @@ E mostra tudo no navegador, na sua própria máquina:
 - **Gráfico:** notas, projetos e links em 2D, 3D ou como **Galaxy**, em que cada braço é uma área e cada conversa com o Claude é uma estrela. A última sessão pulsa.
 - **Linha do tempo:** uma barra por projeto, com as daily notes no eixo.
 - **Leitor:** qualquer nota, conversa ou sessão, com links de volta e as conversas ligadas a cada projeto.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/dashboard-dark.png">
+  <img src="docs/dashboard-light.png" alt="O painel: projetos por área, com status, origem e conversas">
+</picture>
 
 Ele também dá a cada sessão do Claude Code o contexto do projeto dela, por um servidor MCP: o que é o projeto, o status, as decisões e o que já foi conversado. No fim da sessão, o Claude grava um resumo de uma linha no registro de sessões do projeto.
 
@@ -42,6 +53,7 @@ O Claude Code pede as opções do plugin. Dá para mudar depois em `/config`; o 
 | claude.ai data export | O `.zip` do claude.ai (Settings › Privacy › Export data), o `conversations.json` dele, ou uma pasta como Downloads (vale a exportação mais recente que estiver lá). |
 | Notes folder | Um vault do Obsidian ou qualquer pasta de notas em markdown. |
 | Write to project notes | Deixa o Beryl mudar o status das notas de projeto e acrescentar resumos de sessão nelas. Desligada por padrão: os resumos ficam nos dados do próprio Beryl. |
+| Beryl only in my projects | As sessões do Claude só recebem o contexto do Beryl nas pastas dos seus projetos e na pasta de notas, não em repositórios clonados de terceiros. Desligada por padrão. |
 
 Depois de instalar, abra uma sessão nova do Claude Code, para o servidor MCP e os hooks carregarem.
 
@@ -52,6 +64,7 @@ Depois de instalar, abra uma sessão nova do Claude Code, para o servidor MCP e 
 | `/beryl:dashboard` | Abre o painel no navegador. O servidor continua rodando em segundo plano e a página se atualiza sozinha. Na primeira vez, o Claude Code pede permissão para rodar o `python3`: é o servidor local do Beryl ligando. |
 | `/beryl:save` | Grava um resumo curto da sessão no registro de sessões do projeto. |
 | `/beryl:organize` | Organiza as conversas do claude.ai: o Claude propõe um projeto ou uma área para cada uma e grava depois da sua aprovação. |
+| `/beryl:week` | Um resumo dos últimos 7 dias (ou `/beryl:week 14`), por projeto: o que andou, decisões e o que está pendente. |
 
 Sem comando nenhum, o Claude chama `beryl_context` quando você começa a trabalhar num projeto. No fim da sessão ou no `/compact`, um hook grava um registro automático, se ninguém gravou.
 
@@ -83,8 +96,11 @@ python3 beryl.py --config demo/beryl.json serve
 ## Privacidade e segurança
 
 - O servidor só escuta em `127.0.0.1` e só atende pedidos endereçados a ele (checagem de `Host` e `Origin`), o que bloqueia DNS rebinding. Outros sites não leem seus dados nem embutem o painel (CSP com `frame-ancestors 'none'`).
+- Cada execução do servidor tem uma chave secreta própria. O navegador que o Beryl abre recebe a chave num cookie; outros programas do computador que acessem `127.0.0.1` não recebem dados sem ela.
+- A pasta de dados (com a exportação do claude.ai e a chave) só pode ser lida pelo seu usuário.
+- O servidor para sozinho depois de `idle_minutes` (2 horas) sem painel aberto, ou pelo botão "desligar servidor"; `/beryl:dashboard` liga de novo.
 - Gravações só aceitam JSON da própria página do Beryl, até 64 KB, e só o status de notas de projeto graváveis.
-- Títulos, resumos e primeiros pedidos passam por um filtro que mascara chaves de API, tokens e chaves privadas.
+- Títulos, resumos e primeiros pedidos passam por um filtro que mascara chaves de API, tokens e chaves privadas. O filtro funciona por formatos conhecidos: uma senha solta ou um token de formato incomum pode passar, então não conte com ele como única proteção.
 - O MCP só mostra a outras sessões as notas de projeto e as conversas já organizadas, e nada das áreas em `mcp_hidden_areas` (por padrão `personal` e `pessoal`). Conversas sem organização ficam de fora.
 - A pasta da sessão é a pasta de trabalho do próprio servidor MCP, não o `CLAUDE_PROJECT_DIR`, que um repositório poderia definir nas próprias configurações.
 - A chave no endereço que o Beryl abre vale uma vez: um endereço que ficou no histórico do navegador não abre nada.
@@ -128,9 +144,11 @@ Exemplo, para notas que usam `tipo: projeto-claude` e um status próprio:
 
 | Chave | Padrão | O que faz |
 |---|---|---|
-| `notes`, `claude_code`, `claude_export`, `write_notes` | | O mesmo que as opções do plugin. |
+| `notes`, `claude_code`, `claude_export`, `write_notes`, `mcp_only_projects` | | O mesmo que as opções do plugin. |
 | `language` | `auto` | `en`, `pt` ou `auto` (o do sistema; no painel, o do navegador). |
 | `port` | `8765` | Porta do servidor local. |
+| `export_warn_days` | `14` | O painel avisa quando a conversa mais recente da exportação do claude.ai é mais antiga que isso; `0` desliga. |
+| `idle_minutes` | `120` | O servidor para depois desse tempo sem painel aberto; `0` mantém ligado. |
 | `write_dirs` | | Pastas das notas em que o Beryl pode gravar, no lugar de "notas de projeto". |
 | `exclude` | `[]` | Pastas ou arquivos das notas que nunca são lidos. |
 | `project_types` | `projeto`, `project` | Valores de `tipo` (ou `type`) que fazem de uma nota um projeto. |
