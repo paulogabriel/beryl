@@ -6,6 +6,10 @@
 - The dashboard counts the claude.ai conversations still unsorted and suggests `/beryl:organize`.
 - Screenshots in the README (from the demo, light and dark).
 - README in Portuguese brought up to date with the security changes.
+- Security: the MCP takes the session's folder from its own working folder, not from `CLAUDE_PROJECT_DIR` (a repository's settings could set it and pass for one of your projects).
+- Security: in a folder, only a complete claude.ai export (`conversations.json` with `users.json`) is taken, and exports over 2 GB aren't read; a bad export shows no conversations instead of an error.
+- Security: the key in the address Beryl opens works once; the browser keeps a separate session secret.
+- Graph legend: folder names are escaped.
 
 ## 0.8.0 (2026-10-06)
 

@@ -18,7 +18,8 @@ class ServerTest(unittest.TestCase):
         beryl.Handler.log_message = lambda *a: None
         cls.server = beryl.http.server.ThreadingHTTPServer(("127.0.0.1", 0), beryl.Handler)
         cls.port = cls.server.server_address[1]
-        beryl.Handler.token = "s3cret"
+        beryl.Handler.token, beryl.Handler.port = "s3cret", cls.port
+        beryl.Handler.launch = beryl.new_launch_key(cls.port)
         threading.Thread(target=cls.server.serve_forever, daemon=True).start()
 
     @classmethod
@@ -64,11 +65,14 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(self.post("/api/status", {}, Cookie="")[0], 401)
         self.assertEqual(self.request("GET", "/", headers={"Cookie": ""})[0], 200)     # the page itself is public code
 
-    def test_key_in_address_becomes_cookie(self):
-        status, headers, _ = self.request("GET", "/?k=s3cret", headers={"Cookie": ""})
+    def test_launch_key_works_once(self):
+        key = beryl.Handler.launch
+        status, headers, _ = self.request("GET", f"/?k={key}", headers={"Cookie": ""})
         self.assertEqual((status, headers["Location"]), (303, "/"))
         self.assertIn(f"beryl_{self.port}=s3cret", headers["Set-Cookie"])
         self.assertIn("HttpOnly", headers["Set-Cookie"])
+        self.assertNotIn("Set-Cookie", self.request("GET", f"/?k={key}", headers={"Cookie": ""})[1])   # used: from history it opens nothing
+        self.assertEqual(beryl.token_file(self.port).read_text(), beryl.Handler.launch)               # the next `open` gets a fresh one
         status, headers, _ = self.request("GET", "/?k=wrong", headers={"Cookie": ""})
         self.assertEqual(status, 303)
         self.assertNotIn("Set-Cookie", headers)
@@ -103,11 +107,37 @@ class ServerTest(unittest.TestCase):
 class PrivateDataTest(unittest.TestCase):
     def test_folder_and_key_are_owner_only(self):
         import os, stat
-        token = beryl.new_token(1)
+        token = beryl.new_launch_key(1)
         self.assertEqual(stat.S_IMODE(os.stat(beryl.DATA).st_mode), 0o700)
         self.assertEqual(stat.S_IMODE(os.stat(beryl.token_file(1)).st_mode), 0o600)
         self.assertEqual(beryl.token_file(1).read_text(), token)
-        self.assertNotEqual(beryl.new_token(1), token)
+        self.assertNotEqual(beryl.new_launch_key(1), token)
+
+
+class ExportTest(unittest.TestCase):
+    def test_folder_takes_only_real_exports(self):
+        import tempfile, zipfile
+        from pathlib import Path
+        d = Path(tempfile.mkdtemp())
+        with zipfile.ZipFile(d / "real.zip", "w") as z:
+            z.writestr("conversations.json", "[]"); z.writestr("users.json", "[]")
+        with zipfile.ZipFile(d / "dropped.zip", "w") as z:          # newer, but only conversations.json
+            z.writestr("conversations.json", "[]")
+        self.assertEqual(beryl.export_file(d).name, "real.zip")
+        self.assertEqual(beryl.export_file(d / "dropped.zip").name, "dropped.zip")   # a file chosen by name is read as is
+
+    def test_oversized_export_is_not_read(self):
+        import tempfile, zipfile
+        from pathlib import Path
+        f = Path(tempfile.mkdtemp()) / "big.zip"
+        with zipfile.ZipFile(f, "w", zipfile.ZIP_DEFLATED) as z:
+            z.writestr("conversations.json", "[]")
+        old, beryl.MAX_EXPORT = beryl.MAX_EXPORT, 1
+        try:
+            with self.assertRaises(ValueError):
+                beryl.read_export(f)
+        finally:
+            beryl.MAX_EXPORT = old
 
 
 if __name__ == "__main__":

@@ -198,6 +198,7 @@
     "open_chat": "[Abrir no claude.ai](https://claude.ai/chat/{u})",
     "auth_needed": "Abra o Beryl com /beryl:dashboard (ou beryl.py open): este endereço precisa da chave do servidor em execução.",
     "idle_stop": "Parado após {n} minutos sem painel aberto.",
+    "bad_export": "{f} não parece uma exportação do claude.ai (ou é grande demais); não foi lido.",
     "opened": "Beryl aberto em {u}",
     "outside": "Caminho fora da pasta de notas.",
     "paused": "pausado",

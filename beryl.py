@@ -421,14 +421,31 @@ def export_file(path):
         return None
     if path.is_file():
         return path
-    found = [p for p in path.glob("*.zip") if is_export_zip(p)] + list(path.glob("*/conversations.json")) + list(path.glob("conversations.json"))
+    # in a folder (such as Downloads, where any site can drop a file), only what has the whole shape
+    # of a claude.ai export counts: conversations.json next to users.json
+    found = [p for p in path.glob("*.zip") if is_export_zip(p, strict=True)]
+    found += [p for p in [*path.glob("*/conversations.json"), *path.glob("conversations.json")] if (p.parent / "users.json").exists()]
     return max(found, key=lambda p: p.stat().st_mtime, default=None)
 
 
-def is_export_zip(p):
+MAX_EXPORT = 2 * 1024**3                      # conversations.json larger than this isn't read (zip bombs)
+
+
+def export_member(z, strict=False):
+    """The conversations.json inside an export zip, or None."""
+    names = z.namelist()
+    conv = next((i for i in z.infolist() if i.filename.rsplit("/", 1)[-1] == "conversations.json"), None)
+    if not conv or conv.file_size > MAX_EXPORT:
+        return None
+    if strict and conv.filename.replace("conversations.json", "users.json") not in names:
+        return None
+    return conv
+
+
+def is_export_zip(p, strict=False):
     try:
         with zipfile.ZipFile(p) as z:
-            return any(n.endswith("conversations.json") for n in z.namelist())
+            return export_member(z, strict) is not None
     except (OSError, zipfile.BadZipFile):
         return False
 
@@ -436,8 +453,12 @@ def is_export_zip(p):
 def read_export(path):
     if path.suffix == ".zip":
         with zipfile.ZipFile(path) as z:
-            name = next(n for n in z.namelist() if n.endswith("conversations.json"))
-            return json.loads(z.read(name).decode("utf-8"))
+            conv = export_member(z)
+            if conv is None:
+                raise ValueError(tr("bad_export", f=path.name))
+            return json.loads(z.read(conv).decode("utf-8"))
+    if path.stat().st_size > MAX_EXPORT:
+        raise ValueError(tr("bad_export", f=path.name))
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -449,7 +470,12 @@ def chat_notes(cfg, projects, org):
 
     def build():
         out = []
-        for c in read_export(export):
+        try:
+            conversations = read_export(export)
+        except (ValueError, OSError, zipfile.BadZipFile) as e:   # a bad export shows nothing, not an error page
+            print(f"  {e}", file=sys.stderr)
+            return out
+        for c in conversations:
             if "chat:" + c["uuid"] in hidden:
                 continue
             info = chats.get(c["uuid"], {})
@@ -823,6 +849,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     MAX_BODY = 64 * 1024
     args, stamp = {}, None
     token = None                              # secret of this run: the browser Beryl opens gets it as a cookie
+    launch, port = None, None                 # one-use key in the address Beryl opens (beryl.py open reads it from the key file)
     last_seen = time.time()                   # last request, for stopping when idle
 
     def config(self):
@@ -865,14 +892,20 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         return False
 
     def take_key(self):
-        """/?k=<secret>: keeps the secret in a cookie and goes to the clean address. True if it answered."""
+        """/?k=<launch key>: gives the browser the run's secret in a cookie and goes to the clean address.
+        The launch key works once: an address left in the browser history opens nothing. True if it answered."""
         url = urlparse(self.path)
         key = parse_qs(url.query).get("k", [""])[0]
         if url.path != "/" or not key:
             return False
         self.send_response(303)
-        if type(self).token and hmac.compare_digest(key, type(self).token):
-            self.send_header("Set-Cookie", f"{self.cookie_name()}={key}; Path=/; HttpOnly; SameSite=Strict")
+        cls = type(self)
+        with LAUNCH_LOCK:
+            ok = cls.launch and hmac.compare_digest(key, cls.launch)
+            if ok:
+                cls.launch = new_launch_key(cls.port)
+        if ok:
+            self.send_header("Set-Cookie", f"{self.cookie_name()}={cls.token}; Path=/; HttpOnly; SameSite=Strict")
         self.send_header("Location", "/")
         self.send_header("Content-Length", "0")
         self.end_headers()
@@ -967,8 +1000,11 @@ def token_file(port):
     return DATA / f"token-{port}"
 
 
-def new_token(port):
-    """The run's secret, saved owner-only in the data folder (where `beryl.py open` reads it)."""
+LAUNCH_LOCK = threading.Lock()
+
+
+def new_launch_key(port):
+    """A one-use key to open the dashboard, saved owner-only in the data folder (where `beryl.py open` reads it)."""
     private_data()
     token = secrets.token_urlsafe(32)
     tmp = token_file(port).with_suffix(".beryl-tmp")
@@ -994,15 +1030,16 @@ def stop_when_idle(server, minutes):
 def serve(cfg, open_browser=True, args=None):
     Handler.cfg, Handler.args, Handler.stamp = cfg, args or {}, config_stamp((args or {}).get("config"))
     server = http.server.ThreadingHTTPServer(("127.0.0.1", cfg["port"]), Handler)
-    Handler.token, Handler.last_seen = new_token(cfg["port"]), time.time()
+    Handler.token, Handler.port, Handler.last_seen = secrets.token_urlsafe(32), cfg["port"], time.time()
+    Handler.launch = new_launch_key(cfg["port"])
     url = f"http://127.0.0.1:{cfg['port']}/"
     src = sources(cfg)
     print(tr("reading", s=", ".join(k for k, on in src.items() if on) or tr("no_sources")))
     if cfg["notes"]:
         print(tr("notes", f=cfg["notes"], m=tr("writable") if cfg["write_notes"] or cfg["write_dirs"] else tr("readonly")))
-    print(tr("open_at", u=f"{url}?k={Handler.token}"))
+    print(tr("open_at", u=url) + "  (python3 beryl.py open)")
     if open_browser:
-        threading.Timer(0.6, lambda: webbrowser.open(f"{url}?k={Handler.token}")).start()
+        threading.Timer(0.6, lambda: webbrowser.open(f"{url}?k={Handler.launch}")).start()
     if float(cfg.get("idle_minutes") or 0) > 0:
         stop_when_idle(server, float(cfg["idle_minutes"]))
     try:
