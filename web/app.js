@@ -94,7 +94,6 @@ function renderMeta(){
   $("roTag").hidden = META.editable; $("roTag").textContent = t("readonly", {date: META.generated});
   $("stop").hidden = !META.editable;
   $("meta").hidden = true;
-  if (META.vault) document.title = `Beryl · ${META.vault}`;
 }
 async function stopServer(){
   try { await post("/api/stop", {}); } catch (e) {}
@@ -564,8 +563,9 @@ document.addEventListener("keydown", e => {
 });
 
 /* theme: follows the system, or the choice kept in this browser */
-function applyTheme(v){ v === "light" || v === "dark" ? document.documentElement.dataset.theme = v : document.documentElement.removeAttribute("data-theme"); }
-$("theme").value = ["light", "dark"].includes(store.get("beryl-theme")) ? store.get("beryl-theme") : "auto";
+const THEMES = ["crt-beryl", "crt-amber", "auto", "light", "dark"];
+function applyTheme(v){ v === "auto" ? document.documentElement.removeAttribute("data-theme") : document.documentElement.dataset.theme = v; }
+$("theme").value = THEMES.includes(store.get("beryl-theme")) ? store.get("beryl-theme") : "crt-beryl";   // CRT Beryl unless another was chosen
 applyTheme($("theme").value);
 $("theme").onchange = e => { applyTheme(e.target.value); store.set("beryl-theme", e.target.value); graphDirty = true; if (current === "grafico"){ drawGraph(); graphDirty = false; } };
 

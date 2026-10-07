@@ -7,6 +7,10 @@
   "package": "three@0.147.0",
   "sha256": "526a1a2ab6ae01ce383c23e331a03616a34b876d0a9d5577024b28b36b1aa776"
  },
+ "fonts/doto.woff2": {
+  "package": "Google Fonts (OFL)",
+  "sha256": "1c7d9f9c86f929fb4469b8a93510a65936d3bdc49e0a1a6878ae2b0f3f47c7c2"
+ },
  "fonts/ibm-plex-mono-400.woff2": {
   "package": "Google Fonts (OFL)",
   "sha256": "c36f509c0a8f9f85f29cb44bc8701d8a9e0b14c499e77a884f789ead7093a7ac"
@@ -22,5 +26,9 @@
  "fonts/newsreader.woff2": {
   "package": "Google Fonts (OFL)",
   "sha256": "01817351be3edfc1714fe6d60ddea6a22a169a5ebd033b50c7f9495e5d9c386a"
+ },
+ "fonts/vt323.woff2": {
+  "package": "Google Fonts (OFL)",
+  "sha256": "043a60145af2ddbcd0a6452625cb0bfc4e18b222c76dcd1d4a0106715472faba"
  }
 }

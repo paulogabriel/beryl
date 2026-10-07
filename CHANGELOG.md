@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- New themes, in the theme list: CRT Beryl (the default), CRT Amber, and the three dashboard looks (Automatic, Light, Dark). The CRT themes use phosphor colors, terminal type (VT323 and Doto, both OFL and shipped with Beryl), scanlines, a glowing logo and chamfered windows. The names follow the language: CRT Berilo and CRT Âmbar in Portuguese.
+- The Galaxy takes the CRT theme's phosphor for its night sky, dust, arms, core and labels (the original colors stay in the dashboard themes).
+
 ## 0.10.0 (2026-10-07)
 
 - New dashboard structure: top bar with search, theme (automatic, light, dark) and a power button to stop the server; tabs with the summary (projects, conversations, Code sessions) on the right; notices as a strip under the tabs.
