@@ -148,6 +148,7 @@
       setColor(fn){ nodes.forEach(n => { n.mesh.material.color = core(fn(n)); n.halo.material.color = toColor(fn(n)); }); },
       setMatch(fn){ matchFn = fn; applyFocus(); },
       setSonar(on){ nodes.forEach(n => { if (n.sonar) n.sonar.enabled = on; }); },
+      getView: S.getView, setView: S.setView,
       destroy: S.destroy,
     };
   }

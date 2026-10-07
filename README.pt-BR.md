@@ -4,10 +4,7 @@ Um painel local do seu trabalho com o Claude, instalado como plugin do Claude Co
 
 [English](README.md)
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/galaxy-dark.png">
-  <img src="docs/galaxy-light.png" alt="A vista Galaxy: cada braço é uma área, cada estrela uma conversa com o Claude">
-</picture>
+<img src="docs/galaxy-crt.jpg" alt="A vista Galaxy no tema CRT Berilo: cada braço é uma área, cada estrela uma conversa com o Claude">
 
 
 O Beryl lê três fontes, todas opcionais:
@@ -21,12 +18,16 @@ E mostra tudo no navegador, na sua própria máquina:
 - **Painel:** projetos agrupados por área, com status, origem (Claude Code, claude.ai ou os dois), última atividade e número de conversas. Filtros, busca e duas formas de exibir: cards ou accordion.
 - **Gráfico:** notas, projetos e links em 2D, 3D ou como **Galaxy**, em que cada braço é uma área e cada conversa com o Claude é uma estrela. A última sessão pulsa.
 - **Linha do tempo:** uma barra por projeto, com as daily notes no eixo.
-- **Leitor:** qualquer nota, conversa ou sessão, com links de volta e as conversas ligadas a cada projeto.
+- **Leitor:** qualquer nota, conversa ou sessão numa janela de detalhes que você pode arrastar, com links de volta e as conversas ligadas a cada projeto.
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/dashboard-dark.png">
-  <img src="docs/dashboard-light.png" alt="O painel: projetos por área, com status, origem e conversas">
-</picture>
+<img src="docs/dashboard-crt.jpg" alt="O painel: projetos por área, com status, origem e conversas">
+
+**Temas.** A lista no canto superior direito tem cinco visuais: **CRT Berilo** (o padrão) e **CRT Âmbar**, fósforo sobre preto com linhas de varredura, fonte de terminal e logo brilhante; e **Dashboard Automático**, **Claro** e **Escuro**, que seguem o sistema ou a sua escolha. A Galaxy assume o fósforo dos temas CRT. A escolha fica no seu navegador.
+
+<table><tr>
+<td><img src="docs/galaxy-amber.jpg" alt="A Galaxy no tema CRT Âmbar"></td>
+<td><img src="docs/dashboard-light.jpg" alt="O painel no tema Dashboard Claro"></td>
+</tr></table>
 
 Ele também dá a cada sessão do Claude Code o contexto do projeto dela, por um servidor MCP: o que é o projeto, o status, as decisões e o que já foi conversado. No fim da sessão, o Claude grava um resumo de uma linha no registro de sessões do projeto.
 
@@ -152,7 +153,7 @@ Exemplo, para notas que usam `tipo: projeto-claude` e um status próprio:
 | `write_dirs` | | Pastas das notas em que o Beryl pode gravar, no lugar de "notas de projeto". |
 | `exclude` | `[]` | Pastas ou arquivos das notas que nunca são lidos. |
 | `project_types` | `projeto`, `project` | Valores de `tipo` (ou `type`) que fazem de uma nota um projeto. |
-| `statuses` | conforme o idioma | Opções de status na gaveta da nota. |
+| `statuses` | conforme o idioma | Opções de status na janela de detalhes. |
 | `status_groups` | | Suas próprias palavras de status para as cores e filtros: `{"ativo": [...], "pausado": [...], "continuo": [...], "ideia": [...], "encerrado": [...]}`. As palavras comuns (ativo, pausado, ideia, encerrado…) já são conhecidas. |
 | `auto_projects` | `true` | Pastas do Claude Code sem nota de projeto viram projetos. |
 | `organize_file` | `organizacao.json` na pasta de dados | Onde ficam a organização das conversas e os itens ocultos. Caminho relativo parte da pasta de notas. |
@@ -165,7 +166,7 @@ Exemplo, para notas que usam `tipo: projeto-claude` e um status próprio:
 
 ## Deletar
 
-Na gaveta da nota, **Deletar** pede confirmação antes. Uma conversa só some do Beryl: ela continua no claude.ai ou no Claude Code. Uma nota gravável vai para a Lixeira.
+Na janela de detalhes, **Deletar…** pede confirmação antes. Uma conversa só some do Beryl: ela continua no claude.ai ou no Claude Code. Uma nota gravável vai para a Lixeira.
 
 ## Idiomas
 

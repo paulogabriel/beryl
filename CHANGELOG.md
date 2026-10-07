@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- README: new screenshots (CRT Beryl, CRT Amber, Dashboard Light) and a section on the themes; the notes now open in a details window, not a drawer.
+- Galaxy: the decorative dust along the arms is now soft mist that blends into a cloud, instead of separate dots.
+- Fix: the graph no longer jumps back to its starting view while you are using it. A refresh that brings nothing new for the graph leaves it alone, and when something did change (a new conversation, a status), the redrawn graph keeps the zoom and angle you had.
+
 ## 0.11.0 (2026-10-07)
 
 - New themes, in the theme list: CRT Beryl (the default), CRT Amber, and the three dashboard looks (Automatic, Light, Dark). The CRT themes use phosphor colors, terminal type (VT323 and Doto, both OFL and shipped with Beryl), scanlines, a glowing logo and chamfered windows. The names follow the language: CRT Berilo and CRT Âmbar in Portuguese.

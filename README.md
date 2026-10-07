@@ -4,10 +4,7 @@ A local dashboard of your work with Claude, installed as a Claude Code plugin.
 
 [Português](README.pt-BR.md)
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/galaxy-dark.png">
-  <img src="docs/galaxy-light.png" alt="The Galaxy view: each arm is an area, each star a conversation with Claude">
-</picture>
+<img src="docs/galaxy-crt.jpg" alt="The Galaxy view in the CRT Beryl theme: each arm is an area, each star a conversation with Claude">
 
 
 Beryl reads three sources, all optional:
@@ -21,13 +18,17 @@ It shows them in your browser, on your own machine:
 - **Dashboard:** projects grouped by area, with status, origin (Claude Code, claude.ai or both), last activity and number of conversations. Filters, search, and two layouts: cards or accordion.
 - **Graph:** notes, projects and links in 2D, 3D, or as a **Galaxy**, where each arm is an area and every conversation with Claude is a star. The latest session pulses.
 - **Timeline:** one bar per project, with your daily notes on the axis.
-- **Reader:** any note, conversation or session, with backlinks and the conversations linked to each project.
+- **Reader:** any note, conversation or session in a details window you can drag, with backlinks and the conversations linked to each project.
 
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/dashboard-dark.png">
-  <img src="docs/dashboard-light.png" alt="The dashboard: projects by area, with status, origin and conversations">
-</picture>
+<img src="docs/dashboard-crt.jpg" alt="The dashboard: projects by area, with status, origin and conversations">
+
+**Themes.** The list at the top right has five looks: **CRT Beryl** (the default) and **CRT Amber**, phosphor on black with scanlines, terminal type and a glowing logo; and **Dashboard Automatic**, **Light** and **Dark**, which follow your system or your choice. The Galaxy takes the phosphor of the CRT themes. The choice stays in your browser.
+
+<table><tr>
+<td><img src="docs/galaxy-amber.jpg" alt="The Galaxy in the CRT Amber theme"></td>
+<td><img src="docs/dashboard-light.jpg" alt="The dashboard in the Dashboard Light theme"></td>
+</tr></table>
 
 It also gives every Claude Code session the context of its project, through an MCP server: what the project is, its status, the decisions and what was already discussed. At the end of a session, Claude saves a one-line summary to the project's session log.
 
@@ -153,7 +154,7 @@ Example, for notes that use `tipo: projeto-claude` and a status of their own:
 | `write_dirs` | | Note folders where Beryl may write, instead of "project notes". |
 | `exclude` | `[]` | Note folders or files that are never read. |
 | `project_types` | `projeto`, `project` | Values of `type` (or `tipo`) that make a note a project. |
-| `statuses` | by language | Status choices in the note drawer. |
+| `statuses` | by language | Status choices in the details window. |
 | `status_groups` | | Your own status words for the colors and filters: `{"ativo": [...], "pausado": [...], "continuo": [...], "ideia": [...], "encerrado": [...]}`. Common words (active, paused, idea, done…) are known already. |
 | `auto_projects` | `true` | Turn Claude Code folders without a project note into projects. |
 | `organize_file` | `organizacao.json` in the data folder | Where conversation sorting and hidden items are kept. A relative path is relative to the notes folder. |
@@ -166,7 +167,7 @@ Example, for notes that use `tipo: projeto-claude` and a status of their own:
 
 ## Delete
 
-In the note drawer, **Delete** asks for confirmation first. A conversation only disappears from Beryl: it stays in claude.ai or in Claude Code. A writable note goes to the Trash.
+In the details window, **Delete…** asks for confirmation first. A conversation only disappears from Beryl: it stays in claude.ai or in Claude Code. A writable note goes to the Trash.
 
 ## Languages
 
