@@ -37,7 +37,7 @@ class LanguageFilesTest(unittest.TestCase):
     def test_every_page_text_exists(self):
         html = (_env.ROOT / "web" / "index.html").read_text()
         js = "".join((_env.ROOT / "web" / f).read_text() for f in ("app.js", "common.js"))
-        used = set(re.findall(r'data-i(?:-ph|-aria)?="(\w+)"', html)) | set(re.findall(r"\bt\(\"(\w+)\"[,)]", js))
+        used = set(re.findall(r'data-i(?:-ph|-aria|-title)?="(\w+)"', html)) | set(re.findall(r"\bt\(\"(\w+)\"[,)]", js))
         self.assertFalse(used - set(EN["web"]), "texts used by the page but missing in en.json")
 
 
