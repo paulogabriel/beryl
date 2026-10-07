@@ -167,6 +167,9 @@ const Beryl3D = (function(){
     return {
       scene, camera, controls, dom, H, pick, flyTo, worldPerPx, placeLabels, setLabels,
       isFlying: () => !!flying,
+      /* the camera, so a redraw of the same view can put it back where the person left it */
+      getView: () => ({p: camera.position.toArray(), t: controls.target.toArray()}),
+      setView: v => { camera.position.fromArray(v.p); controls.target.fromArray(v.t); controls.update(); },
       /* {items() → ids in order, current() → id, focus(id|null), open(id), describe(id) → text}; label: the canvas's accessible name */
       keyboard(k, label){ keys = k; dom.setAttribute("aria-label", label); },
       on({hover, click, leave}){ hoverFn = hover || hoverFn; clickFn = click || clickFn; leaveFn = leave || leaveFn; },

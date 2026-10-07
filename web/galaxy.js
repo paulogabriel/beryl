@@ -127,7 +127,9 @@
         galaxy.add(new THREE.Points(g, mat));
       };
       const pmat = opacity => new THREE.PointsMaterial({size: 1.55, map: dot, vertexColors: true, transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending});
-      points(0, armCount, pmat(.5));
+      /* the arm dust is mist: big soft points that overlap into a cloud, instead of separate dots */
+      const mist = softTexture([[0,.9],[.18,.55],[.45,.18],[.75,.04],[1,0]]);
+      points(0, armCount, new THREE.PointsMaterial({size: 12, map: mist, vertexColors: true, transparent: true, opacity: .08, depthWrite: false, blending: THREE.AdditiveBlending}));
       points(armCount, k, pmat(.9 * CORE_LEVEL));
       areas.forEach(a => {
         for (let i = 0; i < 8; i++){
@@ -264,6 +266,8 @@
       setSpin(on){ spin = on && !reduced(); },
       select,
       setSonar(on){ notes.forEach(n => { if (n.sonar) n.sonar.enabled = on; }); },
+      getView: () => ({...S.getView(), rot: galaxy.rotation.y}),
+      setView(v){ S.setView(v); if (v.rot !== undefined) galaxy.rotation.y = v.rot; },
       destroy: S.destroy,
     };
   }

@@ -411,6 +411,7 @@ function graphData(){
 
 function drawGraph(){
   const svgEl = $("graph"), box = $("graph3d"), mode = gState.mode;
+  const view = g3 && g3.mode === mode && g3.getView ? g3.getView() : null;   // redrawing the same view keeps the zoom and angle
   if (g3){ g3.destroy(); g3 = null; }
   if (sim){ sim.stop(); sim = null; }
   d3.select(svgEl).selectAll("*").remove(); gSel = null;
@@ -433,6 +434,7 @@ function drawGraph(){
       return drawGraph();
     }
   }
+  if (g3){ g3.mode = mode; if (view) g3.setView(view); }
   $("ghint").textContent = t("hint_" + mode);
   renderLegend(); markGraph();
 }
@@ -576,9 +578,13 @@ const phone = matchMedia("(max-width:760px)");
 const foldSide = () => document.querySelectorAll(".rest details").forEach(d => { d.open = !phone.matches; });
 phone.addEventListener("change", foldSide);
 
+/* what the graph draws: when a refresh brings nothing new for it, the graph stays as it is (no jump back to the start) */
+let lastGraphSig = null;
+const graphSig = () => DATA.map(n => [n.id, n.title, n.status, n.last, n.area, n.kind, n.links.join(",")].join("|")).join("\n");
 function renderAll(){
   renderMeta(); renderStatusbar(); renderAreaSelect(); renderAreas(); renderAside(); renderTimeline();
-  graphDirty = true; if (current === "grafico"){ drawGraph(); graphDirty = false; }
+  const sig = graphSig(), changed = sig !== lastGraphSig; lastGraphSig = sig;
+  if (changed){ graphDirty = true; if (current === "grafico"){ drawGraph(); graphDirty = false; } }
 }
 
 /* ---------- load and follow the data ---------- */
