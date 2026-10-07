@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.11.1 (2026-10-07)
+
 - README: new screenshots (CRT Beryl, CRT Amber, Dashboard Light) and a section on the themes; the notes now open in a details window, not a drawer.
 - Galaxy: the decorative dust along the arms is now soft mist that blends into a cloud, instead of separate dots.
 - Fix: the graph no longer jumps back to its starting view while you are using it. A refresh that brings nothing new for the graph leaves it alone, and when something did change (a new conversation, a status), the redrawn graph keeps the zoom and angle you had.
