@@ -10,7 +10,7 @@ function t(key, vars = {}){
   return typeof v === "string" ? v.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? vars[k] : m)) : v;
 }
 
-/* applies the language and the page's fixed texts (data-i, data-i-ph, data-i-aria) */
+/* applies the language and the page's fixed texts (data-i, data-i-ph, data-i-aria, data-i-title) */
 function setTexts(language, texts){
   LANG = language || "en";
   TEXTS = texts || TEXTS;
@@ -18,4 +18,5 @@ function setTexts(language, texts){
   document.querySelectorAll("[data-i]").forEach(e => { e.textContent = t(e.dataset.i); });
   document.querySelectorAll("[data-i-ph]").forEach(e => { e.placeholder = t(e.dataset.iPh); });
   document.querySelectorAll("[data-i-aria]").forEach(e => { e.setAttribute("aria-label", t(e.dataset.iAria)); });
+  document.querySelectorAll("[data-i-title]").forEach(e => { e.title = t(e.dataset.iTitle); });
 }

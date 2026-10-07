@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- New dashboard structure: top bar with search, theme (automatic, light, dark) and a power button to stop the server; tabs with the summary (projects, conversations, Code sessions) on the right; notices as a strip under the tabs.
+- Dashboard: controls in one row (show as, origin, area, sort), then the status bar; compact two-line cards; accordion with project rows and the area's recent conversations; side column with To confirm first, then recent activity, daily notes and Claude's memory (blocks hide when empty).
+- Graph: the controls sit in a bar above and the legend and hint in a row below; options that don't apply to the current view are disabled in place instead of hidden. The 2D, 3D and Galaxy drawings are unchanged.
+- Timeline: a table with the months on top, daily notes on their own row, one clickable row per project and a legend below.
+- Notes open in a centered window you can drag by its title bar (Esc closes, focus returns to where you were) instead of the side drawer; delete asks in a smaller window.
+- On a phone: filters and graph options fold away, To confirm comes before the list, the other side blocks start closed and the window fills the screen.
+
 ## 0.9.0 (2026-10-06)
 
 - New `/beryl:week` skill (and `beryl.py week --days N`): a recap of the last days by project, from session logs and conversations.

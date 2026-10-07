@@ -87,43 +87,44 @@ function matches(n){
 
 /* ---------- dashboard ---------- */
 function renderMeta(){
-  const convs = DATA.filter(isConv).length, notes = DATA.filter(isNote).length;
-  const links = DATA.filter(n => !isConv(n)).reduce((a, n) => a + n.links.length, 0);
-  const mode = META.editable
-    ? `<span class="live" id="live"><i></i>${t("live")}</span> <button class="linkish" id="stop" type="button">${t("stop_server")}</button>`
-    : t("readonly", {date: esc(META.generated)});
+  const convs = DATA.filter(n => n.kind === "chat").length, sess = DATA.filter(n => n.kind === "code").length;
+  const item = (n, key) => `<div><b>${n}</b><span>${t(key)}</span></div>`;
+  $("sum").innerHTML = item(projects.length, "sum_projects") + (META.sources.claude_export || convs ? item(convs, "sum_convs") : "")
+    + (META.sources.claude_code || sess ? item(sess, "sum_sessions") : "");
+  $("roTag").hidden = META.editable; $("roTag").textContent = t("readonly", {date: META.generated});
+  $("stop").hidden = !META.editable;
+  $("meta").hidden = true;
   if (META.vault) document.title = `Beryl · ${META.vault}`;
-  const b = (key, n) => t(key, {n}).replace(/^\d+/, m => `<b>${m}</b>`);
-  $("meta").innerHTML = [...(notes ? [b("m_notes", notes), b("m_links", links)] : []), b("m_projects", projects.length),
-    ...(convs ? [b("m_convs", convs)] : []), mode].join(" · ");
-  $("stop")?.addEventListener("click", stopServer);
 }
 async function stopServer(){
   try { await post("/api/stop", {}); } catch (e) {}
   stopped = true;
-  $("meta").textContent = t("server_stopped");
+  $("offStrip").hidden = false; $("stop").disabled = true; $("q").disabled = true;
+  if (openId) openNote(openId, true);
 }
+$("stop").onclick = stopServer;
 function renderStatusbar(){
   const c = countBy(projects, n => bucket(n.status));
   $("statusbar").innerHTML = Object.keys(STATUS).filter(k => c[k]).map(k =>
-    `<button class="sbtn" data-s="${k}" aria-pressed="${st.status === k}"><i style="background:${STATUS[k].color}"></i><span class="n">${c[k]}</span><span class="l">${STATUS[k].plural}</span></button>`).join("");
+    `<button class="sbtn" data-s="${k}" aria-pressed="${st.status === k}"><i style="background:${STATUS[k].color}"></i><span class="n">${c[k]}</span><span class="l">${STATUS[k].plural}</span></button>`).join("") + `<span class="sbhint">${t("sb_hint")}</span>`;
 }
 /* conversations linked to a project (those that point to it) */
 const convsOf = id => (back[id] || []).map(x => byId[x]).filter(x => x && isConv(x)).sort(byLast);
+let maxConv = 1;
+const led = v => { const lit = Math.max(v ? 1 : 0, Math.round(v / maxConv * 10)); return `<span class="led" aria-hidden="true">${Array.from({length: 10}, (_, i) => `<i${i < lit ? ' class="on"' : ""}></i>`).join("")}</span>`; };
 function cardHtml(n){
-  const notesIn = (back[n.id] || []).filter(x => byId[x] && !isConv(byId[x])).length, cv = convsOf(n.id);
+  const cv = convsOf(n.id).length;
   return `<button class="card${bucket(n.status) === "encerrado" ? " dim" : ""}" data-id="${esc(n.id)}">
-    <span class="call"><span>${esc(n.folder.replace("/", " · "))}</span><span>${notesIn}↙ ${n.links.length}↗</span></span>
-    <h3>${esc(n.title)}</h3>
-    <p>${esc(n.summary)}</p>
-    ${cv.length ? `<span class="convs">${t("card_convs", {n: cv.length, date: fmt(cv[0].last)}).replace(/^\d+/, m => `<b>${m}</b>`)}</span>` : ""}
-    <span class="foot">${pills(n)}<span class="date">${fmt(n.last)}</span></span>
+    <span class="l1"><h3>${esc(n.title)}</h3><span class="date">${fmt(n.last)}</span></span>
+    <span class="l2">${pills(n)}<span class="ar">${esc(areaName(areaOf(n)))}</span><span class="cv">${t("conv_short", {n: cv})}${led(cv)}</span></span>
   </button>`;
 }
 function renderAreas(){
   const list = projects.filter(n => (!st.status || bucket(n.status) === st.status) && (!st.origem || orig(n) === st.origem) && (!st.area || areaOf(n) === st.area) && matches(n));
   const groups = groupBy(list, areaOf);
   const sortFn = st.sort === "name" ? byTitle : byLast;
+  maxConv = Math.max(1, ...projects.map(n => convsOf(n.id).length));
+  press("sort", b => b.dataset.so === st.sort);
   $("accTools").hidden = st.view !== "accordion";
   press("pview", b => b.dataset.pv === st.view);
   if (st.view === "accordion") return renderAccordion(groups, sortFn);
@@ -151,24 +152,22 @@ function renderAccordion(groups, sortFn){
   const areas = areasOf(projects).filter(a => !filtering || groups[a]);
   accOpen = accOpen || new Set(areas.slice(0, 1));
   const convs = DATA.filter(isConv);
+  const row = n => `<button class="prow" data-id="${esc(n.id)}"><span class="nm">${esc(n.title)}</span><span class="pl">${pills(n)}</span><em>${t("conv_short", {n: convsOf(n.id).length})}</em><em>${fmt(n.last)}</em></button>`;
   $("areas").innerHTML = (areas.length ? `<div class="acc">${areas.map(a => {
     const all = projects.filter(n => areaOf(n) === a), shown = (groups[a] || []).sort(sortFn);
-    const counts = countBy(all, n => bucket(n.status));
     const areaConvs = convs.filter(c => areaOf(c) === a).sort(byLast);
     const last = [...all.map(n => n.last), areaConvs[0] && areaConvs[0].last].filter(Boolean).sort().pop();
     const open = filtering || accOpen.has(a), id = "acc-" + (a || "x").replace(/\W+/g, "-");
-    const summary = ACC_ORDER.filter(k => counts[k]).map(k => `${counts[k]} ${accLabel(k)}`).join(", ");
-    const bar = ACC_ORDER.filter(k => counts[k]).map(k => `<i style="width:${counts[k] / all.length * 100}%;background:${STATUS[k].color}"></i>`).join("");
     return `<section class="acc-area${open ? " open" : ""}" data-acc="${esc(a)}">
       <h2><button class="acc-head" aria-expanded="${open}" aria-controls="${id}">
         <svg class="acc-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
         <span class="acc-title"><strong>${esc(areaName(a))}</strong><span class="counts">${t("m_projects", {n: all.length})}${areaConvs.length ? ` · ${t("m_convs", {n: areaConvs.length})}` : ""}</span></span>
-        <span class="acc-right"><span class="acc-bar" role="img" aria-label="${esc(summary)}" title="${esc(summary)}">${bar}</span><span class="acc-when">${t("acc_last", {date: fmt(last)})}</span></span>
+        <span class="acc-right"><span class="acc-when">${t("acc_last", {date: fmt(last)})}</span></span>
       </button></h2>
       <div class="acc-body" id="${id}" role="region"><div class="acc-inner"><div class="acc-pad">
-        <div class="cards">${shown.map(cardHtml).join("") || EMPTY()}</div>
+        <div class="rows">${shown.map(row).join("") || EMPTY()}</div>
         <div class="acc-recent"><h4>${t("acc_recent")}</h4>
-          ${areaConvs.length ? `<ul>${areaConvs.slice(0, 6).map(c => { const p = byId[c.links[0]];
+          ${areaConvs.length ? `<p class="sub">${areaConvs.length} ${t("acc_archived")} · ${t("acc_last", {date: fmt(areaConvs[0].last)})}</p><ul>${areaConvs.slice(0, 6).map(c => { const p = byId[c.links[0]];
             return `<li><button data-id="${esc(c.id)}"><span class="d">${fmt(c.last)}</span><span class="t">${esc(c.title)}</span><span class="p">${p ? esc(p.title) + " · " : ""}${c.kind === "code" ? "Claude Code" : "chat"}</span></button></li>`; }).join("")}</ul>`
             : `<p class="none">${t("acc_none")}</p>`}
         </div>
@@ -189,26 +188,31 @@ function renderExportNotice(){
   const box = $("exportNotice"), chats = DATA.filter(n => n.kind === "chat" && n.last).map(n => n.last).sort();
   const newest = chats[chats.length - 1], days = newest ? Math.floor((new Date(META.generated) - new Date(newest.slice(0, 10))) / 864e5) : 0;
   box.hidden = !(META.editable && META.sources.claude_export && META.exportWarnDays > 0 && newest && days > META.exportWarnDays);
-  if (!box.hidden) box.innerHTML = `<h3>${t("export_old_title")}</h3><p>${t("export_old", {n: days, date: fmt(newest)})}</p>`;
+  if (!box.hidden) box.textContent = t("export_old", {n: days, date: fmt(newest)});
 }
 /* claude.ai conversations still without area or project: suggests /beryl:organize */
 function renderUnsortedNotice(){
   const box = $("unsortedNotice"), n = DATA.filter(x => x.kind === "chat" && !x.area && !x.links.length).length;
   box.hidden = !(META.editable && n);
-  if (n) box.innerHTML = `<h3>${t("unsorted_title")}</h3><p>${t("unsorted", {n})}</p>`;
+  if (n) box.textContent = t("unsorted", {n});
 }
+const lineItem = (id, top, mid, low) => `<li><button data-id="${esc(id)}">${top ? `<span class="m">${top}</span>` : ""}${mid ? `<span class="t">${mid}</span>` : ""}${low ? `<span class="m low">${low}</span>` : ""}</button></li>`;
 function renderAside(){
   renderExportNotice(); renderUnsortedNotice();
-  $("boxDailies").hidden = $("boxConfirm").hidden = !META.sources.notes;
-  $("boxClaude").hidden = !META.claudeFolder;
   const d = DATA.filter(n => n.kind === "daily").sort(byLast).slice(0, 5);
-  $("dailies").innerHTML = d.map(n => `<button class="daily" data-id="${esc(n.id)}"><span class="d">${esc(n.last)}</span><p>${esc(n.summary)}</p></button>`).join("") || `<p class="muted">${t("no_daily")}</p>`;
+  $("boxDailies").hidden = !META.sources.notes || !d.length;
+  $("dailies").innerHTML = d.map(n => lineItem(n.id, esc(n.last), esc(n.summary))).join("");
   const c = projects.filter(pending).sort(byTitle);
-  $("confirm").innerHTML = c.map(n => `<li><button data-id="${esc(n.id)}"><b>${esc(n.title)}</b> · ${esc(statusLabel(n.status))}?</button></li>`).join("") || `<li>${t("nothing_confirm")}</li>`;
-  const r = [...projects].sort(byLast).slice(0, 7);
-  $("recent").innerHTML = r.map(n => `<li><button data-id="${esc(n.id)}"><span class="d">${fmt(n.last)}</span><span class="t">${esc(n.title)}</span></button></li>`).join("");
+  $("boxConfirm").hidden = !META.sources.notes || !c.length;
+  $("confirm").innerHTML = c.map(n => lineItem(n.id, "", esc(n.title), `${esc(areaName(areaOf(n)))} · ${t("since", {date: fmt(n.first || n.last)})}`)).join("");
+  const convs = DATA.filter(isConv).sort(byLast).slice(0, 6), r = [...projects].sort(byLast).slice(0, 7);
+  $("boxRecent").hidden = !(convs.length || r.length);
+  $("recent").innerHTML = convs.length ? convs.map(x => { const p = byId[x.links[0]], code = x.kind === "code";
+    return lineItem(x.id, `${fmt(x.last)} <span class="stamp o-${code ? "code" : "chat"}">${code ? "Code" : "Chat"}</span>`, p ? esc(p.title) : "", esc(x.title)); }).join("")
+    : r.map(n => lineItem(n.id, fmt(n.last), esc(n.title))).join("");
   const docs = DATA.filter(n => META.claudeFolder && isDoc(n)).sort(byTitle);
-  $("claudeDocs").innerHTML = docs.map(n => `<li><button data-id="${esc(n.id)}"><span class="d">${esc((n.folder.split("/")[1] || "raiz").slice(0, 8))}</span><span class="t">${esc(n.title)}</span></button></li>`).join("");
+  $("boxClaude").hidden = !META.claudeFolder || !docs.length;
+  $("claudeDocs").innerHTML = docs.map(n => lineItem(n.id, `${esc(n.folder.split("/")[1] || "raiz")} · ${fmt(n.last)}`, esc(n.title))).join("");
 }
 function renderAreaSelect(){
   const sel = $("area"), cur = sel.value;
@@ -258,24 +262,51 @@ function md(src){
   return h;
 }
 
-/* ---------- drawer ---------- */
-const drawer = $("drawer"), scrim = $("scrim");
-let openId = null;
+/* ---------- details window ---------- */
+const drawer = $("drawer"), win = $("win");
+let openId = null, lastFocus = null;
+const narrow = () => matchMedia("(max-width:760px)").matches;
+/* title bars are handles: the window can be dragged by them (not on a phone, where it fills the screen) */
+function dragBar(box, bar){
+  let ox = 0, oy = 0, sx = 0, sy = 0, lim = null, on = false;
+  bar.addEventListener("pointerdown", e => {
+    if (narrow() || e.target.closest("button")) return;
+    const r = box.getBoundingClientRect(), w = box.parentElement.getBoundingClientRect();
+    lim = [w.left - r.left + ox, w.right - r.right + ox, w.top - r.top + oy, w.bottom - r.bottom + oy];
+    sx = e.clientX - ox; sy = e.clientY - oy; on = true; bar.setPointerCapture(e.pointerId); bar.classList.add("drag");
+  });
+  bar.addEventListener("pointermove", e => { if (!on) return;
+    ox = Math.min(lim[1], Math.max(lim[0], e.clientX - sx)); oy = Math.min(lim[3], Math.max(lim[2], e.clientY - sy)); box.style.translate = `${ox}px ${oy}px`; });
+  const end = () => { on = false; bar.classList.remove("drag"); };
+  bar.addEventListener("pointerup", end); bar.addEventListener("pointercancel", end);
+  return () => { ox = oy = 0; box.style.translate = ""; };
+}
+const resetWin = dragBar(win, $("wbar")), resetConfirm = dragBar($("cfWin"), $("cfBar"));
 function openNote(id, keepScroll){
   const n = byId[id]; if (!n) return;
+  if (!openId) lastFocus = document.activeElement;
   openId = id;
   $("dpath").textContent = n.path;
   $("dtitle").textContent = n.title;
+  $("wbarT").textContent = t("win_detail", {title: n.title});
   $("dtags").innerHTML = n.project ? pills(n) + (n.area ? `<span class="pill st-encerrado">${esc(n.area)}</span>` : "") : `<span class="pill st-encerrado">${esc(n.kind)}</span>`;
-  $("dstatus").innerHTML = statusControl(n) + deleteControl(n);
-  $("dbody").innerHTML = md(n.body);
+  $("dstatus").innerHTML = statusControl(n);
   const all = (back[id] || []).map(x => byId[x]).filter(Boolean);
   const b = all.filter(x => !isConv(x)), cv = all.filter(isConv).sort(byLast);
-  const chips = list => list.map(x => `<button class="chip" data-id="${esc(x.id)}">${esc(x.title)}</button>`).join("");
-  $("dback").innerHTML = `<div class="back"><h3>${t("backlinks", {n: b.length})}</h3><div class="chips">${chips(b) || `<span class="muted">${t("no_backlinks")}</span>`}</div></div>`
-    + (cv.length ? `<div class="back"><h3>${t("convs_with", {n: cv.length})}</h3><div class="chips">${chips(cv)}</div></div>` : "");
-  drawer.classList.add("on"); scrim.classList.add("on"); drawer.setAttribute("aria-hidden", "false");
-  if (!keepScroll){ drawer.querySelector(".db").scrollTop = 0; $("dclose").focus({preventScroll:true}); }
+  const cell = (k, v) => `<div><dt>${k}</dt><dd>${v}</dd></div>`;
+  $("dgrid").innerHTML = cell(t("last_activity"), fmt(n.last))
+    + (n.project ? cell(t("sum_convs"), cv.filter(c => c.kind === "chat").length) + cell(t("sum_sessions"), cv.filter(c => c.kind === "code").length) : "")
+    + cell(t("folder"), esc(n.folder || "—"));
+  $("dbodyT").textContent = t(isNote(n) ? "sec_note" : "sec_summary");
+  $("dbody").innerHTML = md(n.body);
+  $("dconvsBox").hidden = !cv.length;
+  $("dconvsT").textContent = t("sec_convs");
+  $("dconvs").innerHTML = cv.map(c => `<li><button data-id="${esc(c.id)}"><span class="d">${fmt(c.last)}</span><span class="t">${esc(c.title)}</span><span class="stamp o-${c.kind === "code" ? "code" : "chat"}">${c.kind === "code" ? "Code" : "Chat"}</span></button></li>`).join("");
+  $("dbackT").textContent = t("backlinks", {n: b.length});
+  $("dback").innerHTML = b.map(x => `<button class="chip" data-id="${esc(x.id)}">${esc(x.title)}</button>`).join("") || `<span class="muted">${t("no_backlinks")}</span>`;
+  const del = deleteControl(n); $("ddanger").innerHTML = del; $("ddanger").hidden = !del;
+  drawer.classList.add("on"); drawer.setAttribute("aria-hidden", "false");
+  if (!keepScroll){ resetWin(); win.querySelector(".db").scrollTop = 0; $("dtitle").focus({preventScroll:true}); }
 }
 function statusControl(n){
   if (!n.project) return "";
@@ -285,11 +316,11 @@ function statusControl(n){
   const cur = (n.status || "").replace("?", ""), q = pending(n);
   const opts = META.statuses.map(s => `<option value="${esc(s)}"${s === cur && !q ? " selected" : ""}>${esc(s)}</option>`).join("");
   const placeholder = q || !META.statuses.includes(cur) ? `<option value="" selected disabled>${esc(statusLabel(n.status))}${q ? t("to_confirm") : ""}</option>` : "";
-  return `<label for="stsel">${t("status")}</label><select id="stsel" data-note="${esc(n.id)}">${placeholder}${opts}</select>`;
+  return `<label for="stsel">${t("status")}</label><select id="stsel" data-note="${esc(n.id)}"${stopped ? " disabled" : ""}>${placeholder}${opts}</select>`;
 }
 function deleteControl(n){
-  if (!META.editable || (!isConv(n) && !n.writable)) return "";
-  return `<div><button class="del" data-del="${esc(n.id)}">${t("delete")}</button></div>`;
+  if (!META.editable || stopped || (!isConv(n) && !n.writable)) return "";
+  return `<button class="btn" data-del="${esc(n.id)}">${t("del_open")}</button><p>${t("del_hint")}</p>`;
 }
 let pendingDelete = null;
 document.addEventListener("click", e => {
@@ -298,9 +329,11 @@ document.addEventListener("click", e => {
   const n = byId[b.dataset.del]; if (!n) return;
   pendingDelete = n.id;
   $("cfText").textContent = isConv(n) ? t("del_conv", {title: n.title, where: t(n.kind === "chat" ? "where_chat" : "where_code")}) : t("del_note", {title: n.title});
+  delOpener = b; resetConfirm();
   $("delModal").hidden = false; $("cfNo").focus();
 }, true);
-function closeConfirm(){ $("delModal").hidden = true; pendingDelete = null; }
+let delOpener = null;
+function closeConfirm(){ $("delModal").hidden = true; pendingDelete = null; if (delOpener && delOpener.isConnected) delOpener.focus(); delOpener = null; }
 $("cfNo").onclick = closeConfirm;
 $("delModal").addEventListener("click", e => { if (e.target.id === "delModal") closeConfirm(); });
 $("cfYes").onclick = async () => {
@@ -316,9 +349,9 @@ $("cfYes").onclick = async () => {
   finally { $("cfYes").disabled = false; }
 };
 
-function closeNote(){ drawer.classList.remove("on"); scrim.classList.remove("on"); drawer.setAttribute("aria-hidden", "true"); openId = null;
-  g3?.select?.(null); }
-$("dclose").onclick = closeNote; scrim.onclick = closeNote;
+function closeNote(){ if (!openId) return; drawer.classList.remove("on"); drawer.setAttribute("aria-hidden", "true"); openId = null;
+  g3?.select?.(null); if (lastFocus && lastFocus.isConnected) lastFocus.focus(); lastFocus = null; }
+$("dclose").onclick = closeNote;
 document.addEventListener("click", e => { const t = e.target.closest("[data-id]"); if (t && !t.disabled) openNote(t.dataset.id); });
 
 document.addEventListener("change", async e => {
@@ -382,13 +415,14 @@ function drawGraph(){
   if (g3){ g3.destroy(); g3 = null; }
   if (sim){ sim.stop(); sim = null; }
   d3.select(svgEl).selectAll("*").remove(); gSel = null;
-  $("gdepth").hidden = mode !== "3d";
-  $("glatest").hidden = mode === "2d" || !latestConvId();
-  $("gdocs").hidden = mode === "galaxy" || !META.sources.notes;
+  const opt = (el, on, why) => { el.disabled = !on; el.title = on ? "" : why; };
+  opt($("gdepth"), mode === "3d", t("only_3d"));
+  $("glatest").hidden = !latestConvId(); opt($("glatest"), mode !== "2d", t("only_gal3d"));
+  $("gdocs").hidden = !META.sources.notes; opt($("gdocs"), mode !== "galaxy", t("only_2d3d"));
   $("gdocs").textContent = t(META.claudeFolder ? "docs_claude" : "docs_other");
   $("gdaily").hidden = !META.sources.notes || !DATA.some(n => n.kind === "daily");    // daily notes only exist with a notes folder
   $("gshow").closest(".fgroup").hidden = [...$("gshow").children].every(b => b.hidden);  // no options left: no "Show" label either
-  $("gx").hidden = mode !== "galaxy";
+  opt($("gchats"), mode === "galaxy", t("only_gal")); opt($("gspin"), mode === "galaxy", t("only_gal"));
   box.classList.toggle("galaxy", mode === "galaxy");
   svgEl.toggleAttribute("hidden", mode !== "2d"); box.hidden = mode === "2d";
   if (mode === "2d") draw2d(svgEl);
@@ -477,25 +511,23 @@ function renderTimeline(){
   const pct = d => Math.max(0, Math.min(100, (new Date(d) - t0) / span * 100));
   const monthNames = t("months");
   const mw = 30.4 * 864e5 / span * 100;
-  let h = `<div class="tl-axis"><div></div><div class="tl-months">`;
+  const todayLine = `<span class="tl-today" style="left:${pct(today)}%"></span>`;
+  let h = `<div class="tl-row ax"><div class="tl-lab">${t("tl_col_project")}</div><div class="tl-months">`;
   for (let d = new Date(t0); d < end; d.setMonth(d.getMonth() + 1)){
     const mid = new Date(d.getFullYear(), d.getMonth(), 15);
     h += `<span style="left:${pct(mid)}%">${monthNames[d.getMonth()]}</span>`;
   }
-  h += `<div class="today" style="left:${pct(today)}%"><b>${t("today")}</b></div>`;
+  h += `<div class="today" style="left:${pct(today)}%"><b>${t("today")}</b></div></div></div>`;
+  h += `<div class="tl-row ax"><div class="tl-lab">${t("daily")}</div><div class="tl-months tl-daily">`;
   DATA.filter(n => n.kind === "daily").forEach(n => h += `<button class="dn" style="left:${pct(n.last)}%" data-id="${esc(n.id)}" title="Daily ${esc(n.last)}" aria-label="Daily note ${esc(n.last)}"></button>`);
-  h += `</div></div>`;
-  const groups = groupBy(projects.filter(matches), areaOf);
-  Object.keys(groups).sort(byArea).forEach(k => {
-    h += `<div class="tl-group"><h4>${esc(areaName(k))}</h4>`;
-    groups[k].sort((a, b) => (a.first || a.last).localeCompare(b.first || b.last)).forEach(n => {
-      const a = pct(n.first || n.last), b = pct(n.last || n.first);
-      h += `<div class="tl-row"><button class="name" data-id="${esc(n.id)}" title="${esc(n.title)}">${esc(n.title)}</button>
-        <div class="tl-track" style="--mw:${mw}%"><span class="tl-bar b-${bucket(n.status)}${pending(n) ? " q" : ""}" style="left:${a}%;width:calc(${Math.max(0, b - a)}% + 10px)" title="${esc(n.first)} → ${esc(n.last)}"></span></div></div>`;
-    });
-    h += `</div>`;
+  h += `${todayLine}</div></div>`;
+  projects.filter(matches).sort((a, b) => byArea(areaOf(a), areaOf(b)) || (a.first || a.last).localeCompare(b.first || b.last)).forEach(n => {
+    const a = pct(n.first || n.last), b = pct(n.last || n.first);
+    h += `<button class="tl-row" data-id="${esc(n.id)}" aria-label="${esc(n.title)}, ${esc(statusLabel(n.status))}${pending(n) ? "?" : ""}"><span class="tl-lab"><b title="${esc(n.title)}">${esc(n.title)}</b><em>${esc(statusLabel(n.status))}${pending(n) ? " ?" : ""}</em></span>
+      <span class="tl-track" style="--mw:${mw}%"><span class="tl-bar b-${bucket(n.status)}${pending(n) ? " q" : ""}" style="left:${a}%;width:calc(${Math.max(0, b - a)}% + 10px)" title="${esc(n.first)} → ${esc(n.last)}"></span>${todayLine}</span></button>`;
   });
   $("tl").innerHTML = h;
+  $("tlNote").innerHTML = `<span><i class="bar"></i>${t("tl_leg_bar")}</span><span><i class="bar q"></i>${t("tl_leg_q")}</span><span><i class="dm"></i>${t("tl_leg_daily")}</span><span><i class="td"></i>${t("today")} ${fmt(today)}</span>`;
 }
 
 /* ---------- tabs, filters, search ---------- */
@@ -505,6 +537,7 @@ function show(v){
   current = v;
   document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.v === v));
   TABS.forEach(x => $("v-" + x).hidden = x !== v);
+  $("notices").hidden = v !== "painel";
   if (v !== "grafico" && g3){ g3.destroy(); g3 = null; graphDirty = true; }
   if (v === "grafico" && graphDirty){ drawGraph(); graphDirty = false; }
   store.set("beryl-tab", v);
@@ -513,13 +546,35 @@ document.querySelector(".tabs").addEventListener("click", e => { const t = e.tar
 $("statusbar").addEventListener("click", e => { const b = e.target.closest(".sbtn"); if (!b) return; st.status = st.status === b.dataset.s ? "" : b.dataset.s; renderStatusbar(); renderAreas(); });
 seg("origem", b => { st.origem = b.dataset.o; press("origem", x => x === b); renderAreas(); });
 $("area").onchange = e => { st.area = e.target.value; renderAreas(); };
-$("sort").onchange = e => { st.sort = e.target.value; renderAreas(); };
+seg("sort", b => { st.sort = b.dataset.so; renderAreas(); });
 const qi = $("q");
 qi.addEventListener("input", () => { st.q = qi.value.trim(); renderAreas(); renderTimeline(); markGraph(); });
 document.addEventListener("keydown", e => {
   if (e.key === "/" && document.activeElement !== qi && !/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)){ e.preventDefault(); qi.focus(); }
   if (e.key === "Escape"){ if (!$("delModal").hidden) closeConfirm(); else closeNote(); }
+  /* Tab stays inside the window (or the confirmation) while one is open */
+  if (e.key === "Tab" && (openId || !$("delModal").hidden)){
+    const box = !$("delModal").hidden ? $("cfWin") : win;
+    const f = [...box.querySelectorAll("button, select, a[href], [tabindex]:not([tabindex='-1'])")].filter(x => !x.disabled && x.offsetParent !== null);
+    if (!f.length) return;
+    if (!box.contains(document.activeElement)){ e.preventDefault(); f[0].focus(); }
+    else if (e.shiftKey && document.activeElement === f[0]){ e.preventDefault(); f[f.length - 1].focus(); }
+    else if (!e.shiftKey && document.activeElement === f[f.length - 1]){ e.preventDefault(); f[0].focus(); }
+  }
 });
+
+/* theme: follows the system, or the choice kept in this browser */
+function applyTheme(v){ v === "light" || v === "dark" ? document.documentElement.dataset.theme = v : document.documentElement.removeAttribute("data-theme"); }
+$("theme").value = ["light", "dark"].includes(store.get("beryl-theme")) ? store.get("beryl-theme") : "auto";
+applyTheme($("theme").value);
+$("theme").onchange = e => { applyTheme(e.target.value); store.set("beryl-theme", e.target.value); graphDirty = true; if (current === "grafico"){ drawGraph(); graphDirty = false; } };
+
+/* on a phone, the filters and the graph options fold away, and the side blocks start closed */
+const foldBox = (btn, box) => $(btn).addEventListener("click", () => { const on = !$(box).classList.contains("open"); $(box).classList.toggle("open", on); $(btn).setAttribute("aria-expanded", on); });
+foldBox("filtersBtn", "filtersBox"); foldBox("gfoldBtn", "gfold");
+const phone = matchMedia("(max-width:760px)");
+const foldSide = () => document.querySelectorAll(".rest details").forEach(d => { d.open = !phone.matches; });
+phone.addEventListener("change", foldSide);
 
 function renderAll(){
   renderMeta(); renderStatusbar(); renderAreaSelect(); renderAreas(); renderAside(); renderTimeline();
@@ -549,7 +604,7 @@ async function poll(){
 (async () => {
   try { await load(); }
   catch (e){ $("meta").textContent = (e && e.shown) || t("load_error"); return; }
-  renderAll();
+  renderAll(); foldSide();
   const gm = store.get("beryl-gmode");
   if (gm === "2d" || gm === "3d" || gm === "galaxy") gState.mode = gm;      // Galaxy unless another view was chosen
   press("gmode", x => x.dataset.m === gState.mode);

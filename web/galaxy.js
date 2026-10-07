@@ -21,7 +21,7 @@
   function rand(seed){ let h = 2166136261; for (const ch of seed) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
     return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507), h = Math.imul(h ^ (h >>> 13), 3266489909), (h ^= h >>> 16) >>> 0) / 4294967296); }
   const gauss = r => { let u = 0, v = 0; while (!u) u = r(); while (!v) v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
-  const spiral = (r, base) => base + WIND * Math.log(r / R_MIN);
+  const spiral = (r, base) => base - WIND * Math.log(r / R_MIN);
   /* relative position (0 to 1) of each item in an already sorted list */
   const ranks = (list, into) => list.forEach((n, i) => { into[n.id] = list.length > 1 ? i / (list.length - 1) : .5; });
 
@@ -233,7 +233,7 @@
     /* loop */
     refresh();
     S.start(now => {
-      if (spin && !S.isFlying() && !selected && !hovered) galaxy.rotation.y += SPIN;   // still while a star is under the mouse
+      if (spin && !S.isFlying() && !selected && !hovered) galaxy.rotation.y -= SPIN;   // still while a star is under the mouse
       galaxy.updateMatrixWorld();
       const t = now / 1000, still = reduced();
       notes.forEach(n => { if (!n.mesh) return;
