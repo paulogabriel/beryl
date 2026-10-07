@@ -105,9 +105,6 @@
       "other": "{n} projetos"
     },
     "theme": "Tema",
-    "theme_auto": "Tema: Automático",
-    "theme_light": "Tema: Claro",
-    "theme_dark": "Tema: Escuro",
     "summary": "Resumo",
     "sum_projects": "Projetos",
     "sum_convs": "Conversas",
@@ -135,6 +132,11 @@
     "tl_leg_daily": "daily note",
     "only_2d3d": "só 2D e 3D",
     "only_gal": "só Galaxy",
+    "theme_crt_beryl": "CRT Berilo",
+    "theme_crt_amber": "CRT Âmbar",
+    "theme_auto": "Dashboard Automático",
+    "theme_light": "Dashboard Claro",
+    "theme_dark": "Dashboard Escuro",
     "months": [
       "jan",
       "fev",

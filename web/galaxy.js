@@ -7,7 +7,14 @@
 (function(){
   const {toColor, softTexture, makeSonar, sonar, stage} = Beryl3D;
 
-  const SPACE = "#07090c", CORE_COLOR = "#ffe2a8", ARM_WHITE = "#f3f0ff", ARM_LILAC = "#a58fe6";
+  /* colors: the original night sky (white and lilac dust, warm core), or, in the CRT themes, the theme's phosphor */
+  const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  function palette(){
+    if (!(document.documentElement.dataset.theme || "").startsWith("crt"))
+      return {crt: false, space: "#07090c", core: "#ffe2a8", heat: "#fff1d6", glow: "#ffe3b0", white: "#f3f0ff", lilac: "#a58fe6", line: "#cfc4f7", lineOpacity: .2, field: "#aab8c6", link: "#dfe9e6"};
+    const hot = cssVar("--hot") || cssVar("--fg"), fg = cssVar("--fg");
+    return {crt: true, space: cssVar("--bg"), core: hot, heat: hot, glow: hot, white: hot, lilac: fg, line: fg, lineOpacity: .42, field: cssVar("--muted"), link: fg};
+  }
   /* geometry: arm = area, radius = recency order */
   const R_MIN = 22, R_MAX = 124, WIND = 1.15;
   const ARM_START = R_MIN * .7, ARM_END = R_MAX * 1.12, ARM_LEN = ARM_END - ARM_START;
@@ -64,7 +71,8 @@
   }
 
   function mount(el, opts){
-    const S = stage(el, {fov: 52, near: .5, far: 3000, background: new THREE.Color(SPACE), bloom: [.8, .5, .2]});
+    const P = palette();
+    const S = stage(el, {fov: 52, near: .5, far: 3000, background: new THREE.Color(P.space), bloom: [.8, .5, .2]});
     if (!S) return null;
     const {scene, camera, controls} = S;
     camera.position.set(0, 135, 185);
@@ -90,7 +98,7 @@
     (function dust(){
       const r = rand("poeira"), per = reduced() ? 400 : 650, bulge = 3200;   // less dust: the conversations now draw the arms
       const N = areas.length * per + bulge, pos = new Float32Array(N * 3), col = new Float32Array(N * 3);
-      const core = new THREE.Color("#fff1d6"), white = new THREE.Color(ARM_WHITE), lilac = new THREE.Color(ARM_LILAC), arm = new THREE.Color(), tmp = new THREE.Color();
+      const core = new THREE.Color(P.heat), white = new THREE.Color(P.white), lilac = new THREE.Color(P.lilac), arm = new THREE.Color(), tmp = new THREE.Color();
       const gap = Math.PI * 2 / areas.length;
       const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
       let k = 0;
@@ -124,17 +132,17 @@
       areas.forEach(a => {
         for (let i = 0; i < 8; i++){
           const rr = R_IN * .8 + (i + .5) / 8 * (R_MAX * 1.05 - R_IN * .8), th = spiral(rr, armAngle(a)) + gauss(r) * .02;
-          const s = new THREE.Sprite(new THREE.SpriteMaterial({map: cloud, color: ARM_LILAC, transparent: true, opacity: .085, depthWrite: false, blending: THREE.AdditiveBlending}));
+          const s = new THREE.Sprite(new THREE.SpriteMaterial({map: cloud, color: P.lilac, transparent: true, opacity: P.crt ? .12 : .085, depthWrite: false, blending: THREE.AdditiveBlending}));
           s.position.set(Math.cos(th) * rr, 0, Math.sin(th) * rr); s.scale.setScalar(11 + r() * 7 + rr * .06); galaxy.add(s);
         }
         const pts = [];
         for (let i = 0; i <= 90; i++){ const rr = R_MIN * .9 + i / 90 * (R_MAX * 1.1 - R_MIN * .9), th = spiral(rr, armAngle(a)); pts.push(new THREE.Vector3(Math.cos(th) * rr, 0, Math.sin(th) * rr)); }
-        galaxy.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({color: "#cfc4f7", transparent: true, opacity: .2, depthWrite: false, blending: THREE.AdditiveBlending})));
+        galaxy.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({color: P.line, transparent: true, opacity: P.lineOpacity, depthWrite: false, blending: THREE.AdditiveBlending})));
       });
-      const glow = new THREE.Sprite(new THREE.SpriteMaterial({map: cloud, color: "#ffe3b0", transparent: true, opacity: .55 * CORE_LEVEL, depthWrite: false, blending: THREE.AdditiveBlending})); glow.scale.setScalar(27); galaxy.add(glow);
+      const glow = new THREE.Sprite(new THREE.SpriteMaterial({map: cloud, color: P.glow, transparent: true, opacity: .55 * CORE_LEVEL, depthWrite: false, blending: THREE.AdditiveBlending})); glow.scale.setScalar(27); galaxy.add(glow);
       const ring = [];
       for (let i = 0; i <= 128; i++){ const t = i / 128 * Math.PI * 2; ring.push(new THREE.Vector3(Math.cos(t) * R_HUB, 0, Math.sin(t) * R_HUB)); }
-      galaxy.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring), new THREE.LineBasicMaterial({color: "#cfc4f7", transparent: true, opacity: .28, depthWrite: false})));
+      galaxy.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring), new THREE.LineBasicMaterial({color: P.line, transparent: true, opacity: P.crt ? .5 : .28, depthWrite: false})));
     })();
 
     /* background stars */
@@ -143,7 +151,7 @@
       for (let i = 0; i < N; i++){ const u = r() * 2 - 1, th = r() * Math.PI * 2, R = 900 + r() * 500, s = Math.sqrt(1 - u * u);
         pos.set([R * s * Math.cos(th), R * u, R * s * Math.sin(th)], i * 3); }
       const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-      scene.add(new THREE.Points(g, new THREE.PointsMaterial({size: 2.2, map: dot, color: "#aab8c6", transparent: true, opacity: .55, depthWrite: false})));
+      scene.add(new THREE.Points(g, new THREE.PointsMaterial({size: 2.2, map: dot, color: P.field, transparent: true, opacity: P.crt ? .4 : .55, depthWrite: false})));
     })();
 
     /* note stars: halo, 1px outline and sphere */
@@ -169,7 +177,7 @@
     let colorFn = opts.color;
     function paint(){
       notes.forEach(n => { if (!n.mesh) return;
-        const c = n.id === coreId ? new THREE.Color(CORE_COLOR) : toColor(colorFn(n)), dim = n.project && bucket(n.status) === "encerrado";
+        const c = n.id === coreId ? new THREE.Color(P.core) : toColor(colorFn(n)), dim = n.project && bucket(n.status) === "encerrado";
         n.mesh.material.color.copy(c).lerp(new THREE.Color("#ffffff"), .12).multiplyScalar(dim ? .45 : 1);
         n.halo.material.color.copy(c); n.baseHalo = dim ? .25 : n.kind === "indice" ? .9 : isConv(n) ? .55 : .75;
       });
@@ -177,7 +185,7 @@
     paint();
 
     const cGeo = new THREE.BufferGeometry(); cGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(0), 3));
-    galaxy.add(new THREE.LineSegments(cGeo, new THREE.LineBasicMaterial({color: "#dfe9e6", transparent: true, opacity: .55, depthWrite: false})));
+    galaxy.add(new THREE.LineSegments(cGeo, new THREE.LineBasicMaterial({color: P.link, transparent: true, opacity: .55, depthWrite: false})));
 
     /* state */
     let hovered = null, selected = null, matchFn = null, showDaily = opts.showDaily !== false, showChats = opts.showChats !== false, spin = opts.spin !== false && !reduced();
