@@ -85,6 +85,8 @@ O Claude Code pede as opções do plugin. Tudo é opcional: se você aceitar os 
 - Quando pedir uma exportação mais nova, substitua a antiga e apague-a, para não acumular cópias.
 - Nunca compartilhe o `.zip` nem o arquivo gerado por `build` (veja "Privacidade e segurança").
 
+O que o Beryl faz com senhas, chaves e outros dados sensíveis: veja "Senhas, chaves e outras informações sensíveis" abaixo.
+
 ### 3. Abra uma sessão nova do Claude Code
 
 Feche a sessão atual e abra outra, para o servidor MCP e os hooks carregarem.
@@ -173,7 +175,28 @@ python3 beryl.py --config demo/beryl.json serve
 - `beryl_save_session` só grava no projeto da pasta real da sessão: um README malicioso num repositório qualquer não faz o Claude escrever no registro de outro projeto. O que o Beryl devolve ao Claude vem marcado como dado, não como instrução.
 - Resumos de sessão são gravados em uma linha só, sem links, imagens, HTML ou `%%`.
 - Servidor, MCP e hooks gravam sob uma trava de arquivo compartilhada.
-- `python3 beryl.py build` gera um HTML único, somente leitura, com os títulos e resumos das suas conversas: não compartilhe.
+- `python3 beryl.py build` gera um HTML único, somente leitura, com os títulos e resumos das suas conversas e o texto completo das suas notas: não compartilhe.
+
+### Senhas, chaves e outras informações sensíveis
+
+**O que o Beryl lê e mostra**
+
+- **Exportação do claude.ai:** só o título, o resumo, as datas e o número de mensagens de cada conversa. Não mostra o texto das suas mensagens nem das respostas do Claude.
+- **Sessões do Claude Code:** o título, o primeiro pedido, as pastas e as datas. Não mostra as respostas do Claude, os comandos que ele rodou nem os arquivos que ele leu. (O arquivo da sessão é lido para achar isso, e só isso é guardado.)
+- **Notas:** aparecem como estão, por inteiro, porque são suas.
+
+**O que o filtro faz.** Títulos, resumos, primeiros pedidos e resumos de sessão passam por um filtro antes de chegar ao painel, ao MCP, ao registro de sessões ou a um arquivo do `build`. Ele esconde chaves privadas, chaves de API (Anthropic, OpenAI), tokens do GitHub, chaves de acesso da AWS, chaves de API do Google, tokens do Slack, tokens `Bearer` e qualquer sequência de 40 ou mais letras e números. Ele **não** pega uma senha escrita em texto comum ("minha senha é ..."), números de cartão ou de documentos, códigos de recuperação, nem chaves em formato incomum. É uma rede de segurança, não uma garantia.
+
+**As notas não passam pelo filtro.** Se você escreveu uma senha ou uma chave numa nota, o painel a mostra, um arquivo feito com `build` a leva junto, e o MCP pode entregar ao Claude o começo de uma nota de projeto. Não guarde segredos em notas que o Beryl lê: use um gerenciador de senhas.
+
+**Para onde vão as informações.** O Beryl em si não faz chamadas de rede e não envia nada a lugar nenhum. Mas o que o MCP devolve ao Claude (uma nota de projeto, títulos e resumos) passa a fazer parte daquela sessão do Claude Code, que o Claude Code envia à Anthropic como todo o resto da sessão. Para deixar algo de fora:
+
+- ponha a área dele em `mcp_hidden_areas` (por padrão `personal` e `pessoal`);
+- ligue "Beryl only in my projects";
+- deixe as conversas sem organizar: o MCP só mostra as que você organizou;
+- liste em `exclude` as pastas que o Beryl nunca deve ler.
+
+Os resumos de sessão (filtrados, em uma linha) vão para a nota de registro do projeto se "Write to project notes" estiver ligada e, senão, para a pasta de dados do próprio Beryl, que só o seu usuário lê.
 
 ## Sem o Claude Code
 
@@ -208,6 +231,8 @@ Exemplo, para notas que usam `tipo: projeto-claude` e um status próprio:
   "area_order": ["trabalho", "estudos"]
 }
 ```
+
+Aqui `funcional` conta como projeto ativo. Os nomes dos grupos em `status_groups` são fixos (`ativo`, `pausado`, `continuo`, `ideia`, `encerrado`), em qualquer idioma.
 
 | Chave | Padrão | O que faz |
 |---|---|---|

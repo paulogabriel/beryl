@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- README: a section on passwords, keys and other sensitive information: what Beryl reads and shows, what the filter masks and what it misses, that notes are not filtered, and what reaches Claude (and so Anthropic) through the MCP.
+
 - README: the install guide tells where to keep the claude.ai export safely (a private folder, not Downloads; no git or shared folders; disk encryption; delete old exports).
 
 ## 0.12.2 (2026-10-08)
