@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.12.1 (2026-10-08)
+
 - A page that doesn't exist now shows Beryl's own 404 page, in the theme chosen in the dashboard: a terminal ("SIGNAL LOST") for the CRT themes and a quiet lost-in-the-galaxy card for the others, in the dashboard's language.
 
 - Server hardening (found in a last security pass; none exposed data): error pages and paths with a null byte now get a proper answer instead of dropping the connection, a negative `Content-Length` is refused instead of holding a thread, a JSON body that is not an object gets a 400, and the site's folders are no longer listed.
