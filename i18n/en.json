@@ -180,7 +180,7 @@
     "ro_note": "Read-only: change the status in the note itself, or turn on writing to notes in the Beryl settings.",
     "saved_status": "{title}: status saved as “{status}”.",
     "search": "Search notes and projects",
-    "setup": "<b>No source configured yet.</b><br>Beryl reads your Claude Code sessions, your claude.ai data export and, if you want, a folder of notes. In Claude Code, open <code>/config</code> and fill in the Beryl options.",
+    "setup": "<b>No source configured yet.</b><br>Beryl reads your Claude Code sessions, your claude.ai data export and, if you want, a folder of notes. In Claude Code, run <code>/plugin configure beryl@beryl</code> to fill in the Beryl options.",
     "show": "Show",
     "show_as": "Show as",
     "sort": "Sort",

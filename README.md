@@ -64,7 +64,7 @@ claude plugin install beryl@beryl
 
 ### 2. Choose what Beryl reads
 
-Claude Code asks for the plugin options. Everything is optional: if you accept the defaults, Beryl shows your Claude Code sessions, and you can add the rest later. You can change the options afterwards in `/config`; the dashboard picks up a change within a few seconds.
+Claude Code asks for the plugin options. (If you installed from the terminal it doesn't ask: it only says the options are not set, and you set them with `/plugin configure beryl@beryl` in Claude Code.) Everything is optional: with nothing set, Beryl shows your Claude Code sessions, and you can add the rest later. Change the options at any time with `/plugin configure beryl@beryl`; the dashboard picks up a change within a few seconds.
 
 | Option | What it does |
 |---|---|
@@ -121,7 +121,7 @@ Beryl's own data (hidden items, sorted conversations, the key of the running ser
 | The browser didn't open | Run `/beryl:dashboard` again and open the address it prints. |
 | "This address needs the key of the running server" | Open the dashboard with `/beryl:dashboard`, not with an old address: the key in the address works once. |
 | "Beryl server stopped" strip on the page | The server stopped (idle or shut down). Run `/beryl:dashboard`. |
-| "No source configured yet" | Turn on Read Claude Code sessions, or give a claude.ai export or a notes folder, in `/config`. |
+| "No source configured yet" | Turn on Read Claude Code sessions, or give a claude.ai export or a notes folder, with `/plugin configure beryl@beryl`. |
 | Port 8765 is taken by another program | Set another `port` in your settings file (see "Your own settings"). |
 | Your claude.ai conversations don't show | Check the export path. If it is a folder, it needs a complete export (`conversations.json` with `users.json`). |
 
