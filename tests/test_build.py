@@ -15,6 +15,8 @@ class BuildTest(unittest.TestCase):
         self.assertIn("window.BERYL_DATA=", html)
         self.assertIn("data:font/woff2;base64,", html)
         self.assertNotRegex(html, r'<(script|link)[^>]*(src|href)="(?!data:)')   # every script, style and icon inline
+        self.assertIn('id="boot"', html)                            # the boot screen is in the file too
+        self.assertIn("beryl-booted", html)                         # and its script (boot.js) is inline
         data = html[html.index("window.BERYL_DATA="):]
         data = data[:data.index("</script>")]
         self.assertNotIn("<", data)                                 # no title can break the page

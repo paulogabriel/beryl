@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Boot screen in the CRT themes: the tube turns on, the logo flickers in, check lines type out and a loading bar fills to 100% (it waits for the data), then the dashboard switches on. Once per browser tab; any key or click skips it; not shown with reduced motion or in the Dashboard themes. The saved theme is now applied before the page paints, so there is no flash of another theme.
+- Phone: the status filters (Active, Paused…) no longer make the Dashboard page wider than the screen; the row scrolls inside.
+
 ## 0.13.0 (2026-10-08)
 
 - The dashboard has a footer: "© 2026 Beryl - Created by Paulo Antunes and Claude" (in the dashboard's language) and a link to the repository with the GitHub icon, in every theme.

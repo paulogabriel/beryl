@@ -7,8 +7,18 @@
 <title>Beryl</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
+<script src="boot.js"></script>
 </head>
 <body>
+<div id="boot" role="status" aria-label="Loading Beryl">
+  <div class="boot-screen">
+    <div class="boot-logo"></div>
+    <div class="boot-log" aria-hidden="true"></div>
+    <div class="boot-meta" aria-hidden="true"><span>LOADING</span><span class="boot-pct">0%</span></div>
+    <div class="boot-bar" aria-hidden="true"><span class="boot-fill"></span></div>
+    <div class="boot-skip" aria-hidden="true">PRESS ANY KEY TO SKIP</div>
+  </div>
+</div>
 <div class="off-strip" id="offStrip" role="alert" hidden data-i="off_strip">Beryl server stopped. This page shows the last reading and no longer updates. To bring it back, run Beryl again.</div>
 <div class="wrap">
   <header class="top">
