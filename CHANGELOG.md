@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- README: the install section is now a step-by-step guide (requirements, install, options, getting the claude.ai export, first run, update and uninstall) with a troubleshooting table, in English and Portuguese; the Language option was missing from the options table.
+
+- CRT Galaxy: the legend is now a panel, like the readout, so it stays readable over the grid.
+
 ## 0.12.1 (2026-10-08)
 
 - A page that doesn't exist now shows Beryl's own 404 page, in the theme chosen in the dashboard: a terminal ("SIGNAL LOST") for the CRT themes and a quiet lost-in-the-galaxy card for the others, in the dashboard's language.
