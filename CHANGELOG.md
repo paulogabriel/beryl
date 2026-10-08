@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.12.3 (2026-10-08)
+
 - Fixes from CodeQL: the reader drops Obsidian comments until none is left (a comment inside another no longer leaves a `<!--` behind; what is shown was already escaped), and the CI workflow limits its token to read-only.
 
 - README: a section on passwords, keys and other sensitive information: what Beryl reads and shows, what the filter masks and what it misses, that notes are not filtered, and what reaches Claude (and so Anthropic) through the MCP.
