@@ -232,6 +232,8 @@ Exemplo, para notas que usam `tipo: projeto-claude` e um status próprio:
 }
 ```
 
+Aqui `funcional` conta como projeto ativo. Os nomes dos grupos em `status_groups` são fixos (`ativo`, `pausado`, `continuo`, `ideia`, `encerrado`), em qualquer idioma.
+
 | Chave | Padrão | O que faz |
 |---|---|---|
 | `notes`, `claude_code`, `claude_export`, `write_notes`, `mcp_only_projects` | | O mesmo que as opções do plugin. |

@@ -222,16 +222,18 @@ Beryl keeps two things apart:
 
 Any key you leave out keeps its default. The plugin options still take precedence for the four sources.
 
-Example, for notes that use `tipo: projeto-claude` and a status of their own:
+Example, for notes that use `type: claude-project` and a status of their own:
 
 ```json
 {
-  "project_types": ["projeto-claude", "projeto"],
-  "statuses": ["ativo", "pausado", "funcional", "encerrado"],
-  "status_groups": {"ativo": ["funcional"]},
+  "project_types": ["claude-project", "project"],
+  "statuses": ["active", "paused", "shipped", "done"],
+  "status_groups": {"ativo": ["shipped"]},
   "area_order": ["work", "learning"]
 }
 ```
+
+Here `shipped` counts as an active project. The group names in `status_groups` are fixed (`ativo` active, `pausado` paused, `continuo` ongoing, `ideia` idea, `encerrado` closed), whatever language you write in.
 
 | Key | Default | What it does |
 |---|---|---|
