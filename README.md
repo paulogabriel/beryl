@@ -86,6 +86,8 @@ Claude Code asks for the plugin options. Everything is optional: if you accept t
 - When you ask for a newer export, replace the old one and delete it, so old copies don't pile up.
 - Never share the `.zip` or the file from `build` (see "Privacy and security").
 
+What Beryl does with passwords, keys and other sensitive data: see "Passwords, keys and other sensitive information" below.
+
 ### 3. Start a new Claude Code session
 
 Close the current session and open a new one, so the MCP server and the hooks load.
@@ -175,6 +177,27 @@ python3 beryl.py --config demo/beryl.json serve
 - Session summaries are written as a single line, without links, images, HTML or `%%`.
 - The server, the MCP and the hooks write under a shared file lock.
 - `python3 beryl.py build` creates a single read-only HTML file with the titles and summaries of your conversations: don't share it.
+
+### Passwords, keys and other sensitive information
+
+**What Beryl reads and shows**
+
+- **claude.ai export:** only each conversation's title, summary, dates and number of messages. It doesn't show the text of your messages or of Claude's answers.
+- **Claude Code sessions:** the title, the first request, the folders and the dates. Not Claude's answers, the commands it ran or the files it read. (The session file is read to find those, and only those are kept.)
+- **Notes:** shown as they are, in full, because they are yours.
+
+**What the filter does.** Titles, summaries, first requests and session summaries pass through a filter before they reach the dashboard, the MCP, the session log or a `build` file. It masks private keys, API keys (Anthropic, OpenAI), GitHub tokens, AWS access keys, Google API keys, Slack tokens, `Bearer` tokens and any string of 40 or more letters and digits. It does **not** catch a password written in plain text ("my password is ..."), card or ID numbers, recovery codes, or keys in an unusual format. It is a safety net, not a guarantee.
+
+**Notes are not filtered.** If you wrote a password or a key in a note, the dashboard shows it, and the MCP can hand the first part of a project note to Claude. Don't keep secrets in notes Beryl reads: use a password manager.
+
+**Where information goes.** Beryl itself makes no network calls and sends nothing anywhere. But what the MCP returns to Claude (a project note, titles and summaries) becomes part of that Claude Code session, which Claude Code sends to Anthropic like everything else in the session. To keep something out of it:
+
+- put its area in `mcp_hidden_areas` (by default `personal` and `pessoal`);
+- turn on "Beryl only in my projects";
+- leave conversations unsorted: the MCP only shows the ones you sorted;
+- list the folders Beryl must never read in `exclude`.
+
+Session summaries (filtered, one line) go to the project's log note if "Write to project notes" is on, and otherwise to Beryl's own data folder, which only your user can read.
 
 ## Without Claude Code
 
