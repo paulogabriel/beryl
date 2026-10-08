@@ -63,7 +63,7 @@ claude plugin install beryl@beryl
 
 ### 2. Escolha o que o Beryl lê
 
-O Claude Code pede as opções do plugin. Tudo é opcional: se você aceitar os padrões, o Beryl mostra as suas sessões do Claude Code, e o resto você acrescenta depois. Dá para mudar as opções depois em `/config`; o painel pega a mudança em poucos segundos.
+O Claude Code pede as opções do plugin. (Se você instalou pelo terminal, ele não pergunta: só avisa que as opções não estão definidas, e você as define com `/plugin configure beryl@beryl` no Claude Code.) Tudo é opcional: sem definir nada, o Beryl mostra as suas sessões do Claude Code, e o resto você acrescenta depois. Mude as opções quando quiser com `/plugin configure beryl@beryl`; o painel pega a mudança em poucos segundos.
 
 | Opção | O que faz |
 |---|---|
@@ -120,7 +120,7 @@ Os dados do próprio Beryl (itens ocultos, conversas organizadas, a chave do ser
 | O navegador não abriu | Rode `/beryl:dashboard` de novo e abra o endereço que ele mostra. |
 | "Este endereço precisa da chave do servidor em execução" | Abra o painel com `/beryl:dashboard`, não com um endereço antigo: a chave do endereço vale uma vez. |
 | Faixa "Servidor do Beryl desligado" na página | O servidor parou (inatividade ou desligado). Rode `/beryl:dashboard`. |
-| "Nenhuma fonte configurada" | Ligue Read Claude Code sessions, ou informe uma exportação do claude.ai ou uma pasta de notas, em `/config`. |
+| "Nenhuma fonte configurada" | Ligue Read Claude Code sessions, ou informe uma exportação do claude.ai ou uma pasta de notas, com `/plugin configure beryl@beryl`. |
 | A porta 8765 está ocupada por outro programa | Defina outra `port` no seu arquivo de configurações (veja "Suas configurações"). |
 | As conversas do claude.ai não aparecem | Confira o caminho da exportação. Se for uma pasta, ela precisa ter uma exportação completa (`conversations.json` com `users.json`). |
 

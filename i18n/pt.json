@@ -176,7 +176,7 @@
     "ro_note": "Somente leitura: o status muda na própria nota, ou ative a gravação nas notas na configuração do Beryl.",
     "saved_status": "{title}: status salvo como “{status}”.",
     "search": "Buscar notas e projetos",
-    "setup": "<b>Nenhuma fonte configurada.</b><br>O Beryl lê as sessões do Claude Code, a exportação de dados do claude.ai e, se você quiser, uma pasta de notas. No Claude Code, abra <code>/config</code> e preencha as opções do Beryl.",
+    "setup": "<b>Nenhuma fonte configurada.</b><br>O Beryl lê as sessões do Claude Code, a exportação de dados do claude.ai e, se você quiser, uma pasta de notas. No Claude Code, rode <code>/plugin configure beryl@beryl</code> para preencher as opções do Beryl.",
     "show": "Mostrar",
     "show_as": "Exibir como",
     "sort": "Ordem",

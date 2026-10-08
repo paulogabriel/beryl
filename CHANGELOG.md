@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Options: the README and the "no source configured" screen now point to `/plugin configure beryl@beryl` (what Claude Code itself says) instead of `/config`, and the README explains that an install from the terminal doesn't ask for the options.
+
 ## 0.12.3 (2026-10-08)
 
 - Fixes from CodeQL: the reader drops Obsidian comments until none is left (a comment inside another no longer leaves a `<!--` behind; what is shown was already escaped), and the CI workflow limits its token to read-only.
