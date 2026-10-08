@@ -7,6 +7,9 @@ import _env
 from _env import beryl
 
 
+ORIGINAL_LOG = beryl.Handler.log_message   # the tests below silence the real one
+
+
 class ServerTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -58,6 +61,26 @@ class ServerTest(unittest.TestCase):
         # "nothing leaves your machine": no outside address in the page or in the policy
         self.assertNotIn(b"https://", body)
         self.assertNotIn("http", headers["Content-Security-Policy"])
+
+    def test_bad_requests_get_an_answer(self):
+        status, headers, body = self.request("GET", "/nope.txt<b>")
+        self.assertEqual(status, 404)
+        self.assertIn("text/html", headers["Content-Type"])
+        self.assertIn(b"404", body)
+        self.assertNotIn(b"<b>", body)                                        # the path is shown escaped
+        self.assertEqual(self.request("GET", "/api/nope")[2][:1], b"{")       # the API keeps answering in JSON
+        self.assertEqual(self.request("GET", "/index.html%00.png")[0], 404)
+        self.assertEqual(self.request("GET", "/fonts/")[0], 404)              # no folder listing
+        self.assertEqual(self.request("GET", "/%2e%2e/beryl.py")[0], 404)
+        h = {"Origin": f"http://127.0.0.1:{self.port}", "Content-Type": "application/json"}
+        for body in ("[1,2]", "{{{"):
+            self.assertEqual(self.request("POST", "/api/status", body, h)[0], 400)
+        self.assertEqual(self.request("POST", "/api/status", "{}", {**h, "Content-Length": "-1"})[0], 413)
+
+    def test_log_message_takes_a_status_code(self):
+        import contextlib, http, io
+        with contextlib.redirect_stderr(io.StringIO()):
+            ORIGINAL_LOG(None, "code %s, message %s", http.HTTPStatus.NOT_FOUND, "x")   # error pages pass a status, not text
 
     def test_data_needs_the_key(self):
         self.assertEqual(self.request("GET", "/api/data", headers={"Cookie": ""})[0], 401)

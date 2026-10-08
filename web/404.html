@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="{{lang}}">
+<head>
+<meta charset="utf-8">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>404 · Beryl</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="404.css">
+<script src="404.js"></script>
+</head>
+<body class="nf">
+<main class="nf-crt" aria-labelledby="nfc">
+  <pre class="nf-boot" aria-hidden="true">BERYL TERMINAL
+&gt; open {{path}}</pre>
+  <h1 id="nfc" class="nf-code">404</h1>
+  <p class="nf-err">{{crt_error}}</p>
+  <p class="nf-msg">{{crt_msg}}</p>
+  <a class="nf-btn" href="/">&gt; {{back}}<i class="nf-cur" aria-hidden="true"></i></a>
+</main>
+<main class="nf-dash" aria-labelledby="nfd">
+  <svg class="nf-orbit" viewBox="0 0 240 150" aria-hidden="true">
+    <ellipse cx="120" cy="75" rx="108" ry="56" class="o1"/>
+    <ellipse cx="120" cy="75" rx="72" ry="37" class="o2"/>
+    <ellipse cx="120" cy="75" rx="36" ry="19" class="o3"/>
+    <circle cx="120" cy="75" r="5" class="core"/>
+    <circle cx="30" cy="52" r="4" class="star"/>
+    <circle cx="196" cy="98" r="4" class="star"/>
+    <circle cx="150" cy="51" r="3" class="star"/>
+    <circle cx="205" cy="40" r="6" class="lost"/>
+  </svg>
+  <p class="nf-kicker">404</p>
+  <h1 id="nfd">{{title}}</h1>
+  <p class="nf-msg">{{msg}}</p>
+  <a class="nf-btn" href="/">{{back}}</a>
+</main>
+</body>
+</html>

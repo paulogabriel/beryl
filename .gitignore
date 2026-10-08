@@ -5,6 +5,7 @@ data/
 # arquivos gerados
 *.html
 !web/index.html
+!web/404.html
 *.beryl-tmp
 __pycache__/
 .DS_Store

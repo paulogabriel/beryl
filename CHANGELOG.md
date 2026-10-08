@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- A page that doesn't exist now shows Beryl's own 404 page, in the theme chosen in the dashboard: a terminal ("SIGNAL LOST") for the CRT themes and a quiet lost-in-the-galaxy card for the others, in the dashboard's language.
+
+- Server hardening (found in a last security pass; none exposed data): error pages and paths with a null byte now get a proper answer instead of dropping the connection, a negative `Content-Length` is refused instead of holding a thread, a JSON body that is not an object gets a 400, and the site's folders are no longer listed.
+
 ## 0.12.0 (2026-10-08)
 
 - CRT themes: the Galaxy is now a flat instrument screen (a new `galaxy-crt.js`, drawn on a canvas with no WebGL). It has a polar grid behind the turning galaxy (rings, spokes, degree marks and numbers); flat marks for projects (triangle: Code, circle: chat, square: both; filled when active) tinted by the chosen color; conversations as small squares along the arms (the Chats button still hides them); a sight at the core; daily notes and index notes around it; search matches ringed and named; the latest session as a dashed ring. The star under the mouse or chosen with the keyboard gets corner brackets, dashed cross lines, its arm lit and a readout. The wheel zooms, dragging moves, double click resets. The other themes keep the 3D Galaxy.
