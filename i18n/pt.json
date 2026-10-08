@@ -137,6 +137,11 @@
     "theme_auto": "Dashboard Automático",
     "theme_light": "Dashboard Claro",
     "theme_dark": "Dashboard Escuro",
+    "hint_galaxy_crt": "cada braço é uma área · a roda dá zoom, arraste move · clique ou use as setas",
+    "crt_no_sel": "Sem seleção",
+    "crt_no_sel_hint": "Passe o mouse sobre uma forma ou use as setas.",
+    "mark_filled": "cheio: ativo",
+    "mark_hollow": "vazado: parado",
     "months": [
       "jan",
       "fev",

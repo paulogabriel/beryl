@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- CRT themes: the Galaxy is now a flat instrument screen (a new `galaxy-crt.js`, drawn on a canvas with no WebGL). It has a polar grid behind the turning galaxy (rings, spokes, degree marks and numbers); flat marks for projects (triangle: Code, circle: chat, square: both; filled when active) tinted by the chosen color; conversations as small squares along the arms (the Chats button still hides them); a sight at the core; daily notes and index notes around it; search matches ringed and named; the latest session as a dashed ring. The star under the mouse or chosen with the keyboard gets corner brackets, dashed cross lines, its arm lit and a readout. The wheel zooms, dragging moves, double click resets. The other themes keep the 3D Galaxy.
+
+
 ## 0.11.2 (2026-10-07)
 
 - Galaxy: the mist along the arms is half as opaque, so it reads as a light haze.

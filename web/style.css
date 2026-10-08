@@ -487,3 +487,22 @@ button.tl-row:hover{background:var(--surface-2)}
 :root[data-theme^="crt"] .g3-labels span{font-size:15px;border-radius:0;background:color-mix(in srgb,var(--surface) 85%,transparent)}
 :root[data-theme^="crt"] .g3-labels span.arm{background:none;color:var(--muted);font-size:16px;letter-spacing:.1em;opacity:1;text-shadow:var(--glow)}
 :root[data-theme^="crt"] #graph3d.galaxy .g3-labels span.main{background:var(--surface);color:var(--hot);border-color:var(--line-2);text-shadow:none}
+
+/* Galaxy on an instrument screen (CRT themes, galaxy-crt.js): frame, title, readout and legend over the canvas */
+#graph3d>canvas{cursor:crosshair}
+#graph3d>canvas:focus-visible{outline:2px dashed var(--hot);outline-offset:-4px}
+.gcrt{position:absolute;inset:0;pointer-events:none;color:var(--fg);font:19px/1.15 var(--sans);z-index:3}
+.gcrt .gc{position:absolute;width:22px;height:22px;border:0 solid var(--fg)}
+.gcrt .c1{left:10px;top:10px;border-width:2px 0 0 2px}.gcrt .c2{right:10px;top:10px;border-width:2px 2px 0 0}
+.gcrt .c3{left:10px;bottom:10px;border-width:0 0 2px 2px}.gcrt .c4{right:10px;bottom:10px;border-width:0 2px 2px 0}
+.gcrt .gr{position:absolute;right:24px;top:20px;width:min(250px,calc(100% - 48px));border:1px solid var(--line);background:color-mix(in srgb,var(--bg) 88%,transparent);padding:8px 12px 6px;display:grid;gap:1px}
+.gcrt .gr h4{margin:0 0 3px;font:400 21px/1.1 var(--sans);color:var(--hot);overflow-wrap:anywhere}
+.gcrt .gr p{margin:0;color:var(--muted)}
+.gcrt .gr div{display:flex;justify-content:space-between;gap:12px;color:var(--muted)}
+.gcrt .gr div b{font-weight:400;color:var(--fg);text-align:right}
+.gcrt .gl{position:absolute;right:24px;bottom:18px;display:flex;flex-wrap:wrap;gap:3px 16px;justify-content:flex-end;color:var(--muted);max-width:min(560px,calc(100% - 200px))}
+.gcrt .gl span{display:inline-flex;gap:7px;align-items:center;white-space:nowrap}
+.gcrt .gg{display:inline-block;width:12px;height:12px;flex:none;border:1.5px solid var(--fg)}
+.gcrt .gg.circ{border-radius:50%}.gcrt .gg.tri{border:0;background:var(--fg);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.gcrt .gg.fill{background:var(--fg)}.gcrt .gg.ring{border-radius:50%;border-style:dashed;width:15px;height:15px}
+@media (max-width:760px){.gcrt .gl{display:none}.gcrt .gr{width:190px;font-size:16px}}
