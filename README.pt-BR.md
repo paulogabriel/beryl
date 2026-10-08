@@ -123,6 +123,8 @@ python3 beryl.py build -o out.html  # um HTML único, somente leitura
 
 As configurações vêm então de um `beryl.json` ao lado do `beryl.py` (veja `beryl.example.json`) ou do caminho em `BERYL_CONFIG`. No macOS, `scripts/make-app.sh` cria o `~/Applications/Beryl.app`, com o ícone do Beryl, para o Dock.
 
+O Beryl roda no computador, junto dos seus arquivos: não dá para instalá-lo no celular, e o servidor recusa conexões de outros aparelhos de propósito. No celular você pode abrir o arquivo gerado por `build` (mande para você mesmo, por exemplo por AirDrop): é uma foto do momento em que foi gerado e não se atualiza.
+
 ## Suas configurações
 
 O Beryl separa duas coisas:
