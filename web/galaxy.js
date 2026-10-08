@@ -96,7 +96,7 @@
 
     /* arm dust (white with lilac hues) and the core bulge */
     (function dust(){
-      const r = rand("poeira"), per = reduced() ? 400 : 650, bulge = 3200;   // less dust: the conversations now draw the arms
+      const r = rand("poeira"), per = reduced() ? 400 : 650, bulge = 0;   // less dust: the conversations now draw the arms; no dotted bulge in the core, only its glow
       const N = areas.length * per + bulge, pos = new Float32Array(N * 3), col = new Float32Array(N * 3);
       const core = new THREE.Color(P.heat), white = new THREE.Color(P.white), lilac = new THREE.Color(P.lilac), arm = new THREE.Color(), tmp = new THREE.Color();
       const gap = Math.PI * 2 / areas.length;
@@ -129,8 +129,8 @@
       const pmat = opacity => new THREE.PointsMaterial({size: 1.55, map: dot, vertexColors: true, transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending});
       /* the arm dust is mist: big soft points that overlap into a cloud, instead of separate dots */
       const mist = softTexture([[0,.9],[.18,.55],[.45,.18],[.75,.04],[1,0]]);
-      points(0, armCount, new THREE.PointsMaterial({size: 12, map: mist, vertexColors: true, transparent: true, opacity: .08, depthWrite: false, blending: THREE.AdditiveBlending}));
-      points(armCount, k, pmat(.9 * CORE_LEVEL));
+      points(0, armCount, new THREE.PointsMaterial({size: 12, map: mist, vertexColors: true, transparent: true, opacity: .04, depthWrite: false, blending: THREE.AdditiveBlending}));
+      if (k > armCount) points(armCount, k, pmat(.9 * CORE_LEVEL));
       areas.forEach(a => {
         for (let i = 0; i < 8; i++){
           const rr = R_IN * .8 + (i + .5) / 8 * (R_MAX * 1.05 - R_IN * .8), th = spiral(rr, armAngle(a)) + gauss(r) * .02;
