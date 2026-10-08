@@ -1,7 +1,7 @@
 {
   "name": "beryl",
   "displayName": "Beryl",
-  "version": "0.12.1",
+  "version": "0.12.2",
   "description": "A local dashboard of your work with Claude: Claude Code sessions, your claude.ai data export and, optionally, a folder of notes. Gives every Claude Code session the context of its project.",
   "author": {
     "name": "paulogabriel",
