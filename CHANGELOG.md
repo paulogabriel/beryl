@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Galaxy: the mist along the arms is half as opaque, so it reads as a light haze.
+- Galaxy: the core no longer has the dotted bulge around it, only its glow.
+
 ## 0.11.1 (2026-10-07)
 
 - README: new screenshots (CRT Beryl, CRT Amber, Dashboard Light) and a section on the themes; the notes now open in a details window, not a drawer.
