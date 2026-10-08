@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- README: the install section is now a step-by-step guide (requirements, install, options, getting the claude.ai export, first run, update and uninstall) with a troubleshooting table, in English and Portuguese; the Language option was missing from the options table.
+
+- CRT Galaxy: the legend is now a panel, like the readout, so it stays readable over the grid.
+
 - CRT Galaxy: the star under the mouse (or chosen with the keyboard) now draws lines to the notes it is linked to, like the 3D Galaxy; the core note also reaches the arms of its areas.
 
 ## 0.12.1 (2026-10-08)

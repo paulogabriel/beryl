@@ -37,26 +37,81 @@ O nome vem do berilo, a pedra das primeiras lentes de óculos e o oitavo fundame
 
 ## Instalação
 
-Requisitos: Claude Code e Python 3.9 ou mais novo (no macOS, `xcode-select --install` instala). macOS e Linux. Nada mais para instalar.
+**Você precisa de:**
 
-No Claude Code:
+- **Claude Code** com suporte a plugins (o comando `/plugin`).
+- **Python 3.9 ou mais novo.** No macOS, `xcode-select --install` instala; no Linux vem com a maioria das distribuições. Confira com `python3 --version`.
+- **macOS ou Linux.** No Windows, use o WSL.
+
+Nada mais para instalar: o Beryl usa só a biblioteca padrão do Python.
+
+### 1. Instale o plugin
+
+Digite no prompt do Claude Code (não no terminal):
 
 ```
 /plugin marketplace add paulogabriel/beryl
 /plugin install beryl@beryl
 ```
 
-O Claude Code pede as opções do plugin. Dá para mudar depois em `/config`; o painel pega a mudança em poucos segundos.
+Ou pelo terminal:
+
+```bash
+claude plugin marketplace add paulogabriel/beryl
+claude plugin install beryl@beryl
+```
+
+### 2. Escolha o que o Beryl lê
+
+O Claude Code pede as opções do plugin. Tudo é opcional: se você aceitar os padrões, o Beryl mostra as suas sessões do Claude Code, e o resto você acrescenta depois. Dá para mudar as opções depois em `/config`; o painel pega a mudança em poucos segundos.
 
 | Opção | O que faz |
 |---|---|
 | Read Claude Code sessions | Mostra as sessões do Claude Code e agrupa em projetos. Ligada por padrão. |
 | claude.ai data export | O `.zip` do claude.ai (Settings › Privacy › Export data), o `conversations.json` dele, ou uma pasta como Downloads (vale a exportação mais recente que estiver lá). |
 | Notes folder | Um vault do Obsidian ou qualquer pasta de notas em markdown. |
+| Language | `auto` (a do sistema), `en` ou `pt`. As outras caem para o inglês. |
 | Write to project notes | Deixa o Beryl mudar o status das notas de projeto e acrescentar resumos de sessão nelas. Desligada por padrão: os resumos ficam nos dados do próprio Beryl. |
 | Beryl only in my projects | As sessões do Claude só recebem o contexto do Beryl nas pastas dos seus projetos e na pasta de notas, não em repositórios clonados de terceiros. Desligada por padrão. |
 
-Depois de instalar, abra uma sessão nova do Claude Code, para o servidor MCP e os hooks carregarem.
+**Como obter a exportação do claude.ai.** No claude.ai, abra Settings › Privacy › Export data. O claude.ai envia por e-mail um link para baixar (o link expira, então baixe logo). Guarde o `.zip` onde quiser, por exemplo em Downloads, e informe ao Beryl esse arquivo ou a pasta. Sem a exportação o Beryl funciona do mesmo jeito; só não mostra as suas conversas do claude.ai. A exportação é uma foto do momento, então peça uma nova de vez em quando: o painel avisa quando a conversa mais recente tem mais de 14 dias.
+
+### 3. Abra uma sessão nova do Claude Code
+
+Feche a sessão atual e abra outra, para o servidor MCP e os hooks carregarem.
+
+### 4. Abra o painel
+
+Na sessão nova:
+
+```
+/beryl:dashboard
+```
+
+Na primeira vez, o Claude Code pede permissão para rodar `python3`: é o servidor local do Beryl começando. O navegador abre então o painel. O servidor continua rodando em segundo plano e a página se atualiza sozinha; ele para depois de 2 horas sem o painel aberto, e `/beryl:dashboard` liga de novo.
+
+Se você também deu uma exportação do claude.ai ao Beryl, rode `/beryl:organize` uma vez: o Claude propõe um projeto ou uma área para cada conversa e salva depois que você aprovar.
+
+### Atualizar e desinstalar
+
+```bash
+claude plugin update beryl@beryl      # versão mais nova (ou /plugin update)
+claude plugin uninstall beryl@beryl   # remove o plugin
+```
+
+Os dados do próprio Beryl (itens ocultos, conversas organizadas, a chave do servidor em execução) ficam em `~/.claude/plugins/data/beryl-beryl`. Apague essa pasta para removê-los. Suas notas nunca são apagadas.
+
+### Se algo der errado
+
+| O que você vê | O que fazer |
+|---|---|
+| `python3: command not found`, ou Python mais velho que 3.9 | Instale o Python 3.9 ou mais novo (veja "Você precisa de") e rode `/beryl:dashboard` de novo. |
+| O navegador não abriu | Rode `/beryl:dashboard` de novo e abra o endereço que ele mostra. |
+| "Este endereço precisa da chave do servidor em execução" | Abra o painel com `/beryl:dashboard`, não com um endereço antigo: a chave do endereço vale uma vez. |
+| Faixa "Servidor do Beryl desligado" na página | O servidor parou (inatividade ou desligado). Rode `/beryl:dashboard`. |
+| "Nenhuma fonte configurada" | Ligue Read Claude Code sessions, ou informe uma exportação do claude.ai ou uma pasta de notas, em `/config`. |
+| A porta 8765 está ocupada por outro programa | Defina outra `port` no seu arquivo de configurações (veja "Suas configurações"). |
+| As conversas do claude.ai não aparecem | Confira o caminho da exportação. Se for uma pasta, ela precisa ter uma exportação completa (`conversations.json` com `users.json`). |
 
 ## Uso
 
@@ -122,6 +177,8 @@ python3 beryl.py build -o out.html  # um HTML único, somente leitura
 ```
 
 As configurações vêm então de um `beryl.json` ao lado do `beryl.py` (veja `beryl.example.json`) ou do caminho em `BERYL_CONFIG`. No macOS, `scripts/make-app.sh` cria o `~/Applications/Beryl.app`, com o ícone do Beryl, para o Dock.
+
+O Beryl roda no computador, junto dos seus arquivos: não dá para instalá-lo no celular, e o servidor recusa conexões de outros aparelhos de propósito. No celular você pode abrir o arquivo gerado por `build` (mande para você mesmo, por exemplo por AirDrop): é uma foto do momento em que foi gerado e não se atualiza.
 
 ## Suas configurações
 
