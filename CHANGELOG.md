@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- README: the install guide tells where to keep the claude.ai export safely (a private folder, not Downloads; no git or shared folders; disk encryption; delete old exports).
+
 ## 0.12.2 (2026-10-08)
 
 - README: the install section is now a step-by-step guide (requirements, install, options, getting the claude.ai export, first run, update and uninstall) with a troubleshooting table, in English and Portuguese; the Language option was missing from the options table.

@@ -1,6 +1,6 @@
 {
   "notes": "~/Documents/My notes",
-  "claude_export": "~/Downloads",
+  "claude_export": "~/Private/claude-export",
   "write_notes": false,
   "language": "auto",
   "port": 8765,
