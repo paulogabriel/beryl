@@ -175,7 +175,7 @@ python3 beryl.py --config demo/beryl.json serve
 - `beryl_save_session` só grava no projeto da pasta real da sessão: um README malicioso num repositório qualquer não faz o Claude escrever no registro de outro projeto. O que o Beryl devolve ao Claude vem marcado como dado, não como instrução.
 - Resumos de sessão são gravados em uma linha só, sem links, imagens, HTML ou `%%`.
 - Servidor, MCP e hooks gravam sob uma trava de arquivo compartilhada.
-- `python3 beryl.py build` gera um HTML único, somente leitura, com os títulos e resumos das suas conversas: não compartilhe.
+- `python3 beryl.py build` gera um HTML único, somente leitura, com os títulos e resumos das suas conversas e o texto completo das suas notas: não compartilhe.
 
 ### Senhas, chaves e outras informações sensíveis
 
@@ -187,7 +187,7 @@ python3 beryl.py --config demo/beryl.json serve
 
 **O que o filtro faz.** Títulos, resumos, primeiros pedidos e resumos de sessão passam por um filtro antes de chegar ao painel, ao MCP, ao registro de sessões ou a um arquivo do `build`. Ele esconde chaves privadas, chaves de API (Anthropic, OpenAI), tokens do GitHub, chaves de acesso da AWS, chaves de API do Google, tokens do Slack, tokens `Bearer` e qualquer sequência de 40 ou mais letras e números. Ele **não** pega uma senha escrita em texto comum ("minha senha é ..."), números de cartão ou de documentos, códigos de recuperação, nem chaves em formato incomum. É uma rede de segurança, não uma garantia.
 
-**As notas não passam pelo filtro.** Se você escreveu uma senha ou uma chave numa nota, o painel a mostra, e o MCP pode entregar ao Claude o começo de uma nota de projeto. Não guarde segredos em notas que o Beryl lê: use um gerenciador de senhas.
+**As notas não passam pelo filtro.** Se você escreveu uma senha ou uma chave numa nota, o painel a mostra, um arquivo feito com `build` a leva junto, e o MCP pode entregar ao Claude o começo de uma nota de projeto. Não guarde segredos em notas que o Beryl lê: use um gerenciador de senhas.
 
 **Para onde vão as informações.** O Beryl em si não faz chamadas de rede e não envia nada a lugar nenhum. Mas o que o MCP devolve ao Claude (uma nota de projeto, títulos e resumos) passa a fazer parte daquela sessão do Claude Code, que o Claude Code envia à Anthropic como todo o resto da sessão. Para deixar algo de fora:
 

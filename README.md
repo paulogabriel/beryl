@@ -176,7 +176,7 @@ python3 beryl.py --config demo/beryl.json serve
 - `beryl_save_session` only writes to the project of the session's real folder: a malicious README in some repository can't make Claude write into another project's log. What Beryl returns to Claude is marked as data, not instructions.
 - Session summaries are written as a single line, without links, images, HTML or `%%`.
 - The server, the MCP and the hooks write under a shared file lock.
-- `python3 beryl.py build` creates a single read-only HTML file with the titles and summaries of your conversations: don't share it.
+- `python3 beryl.py build` creates a single read-only HTML file with the titles and summaries of your conversations and the full text of your notes: don't share it.
 
 ### Passwords, keys and other sensitive information
 
@@ -188,7 +188,7 @@ python3 beryl.py --config demo/beryl.json serve
 
 **What the filter does.** Titles, summaries, first requests and session summaries pass through a filter before they reach the dashboard, the MCP, the session log or a `build` file. It masks private keys, API keys (Anthropic, OpenAI), GitHub tokens, AWS access keys, Google API keys, Slack tokens, `Bearer` tokens and any string of 40 or more letters and digits. It does **not** catch a password written in plain text ("my password is ..."), card or ID numbers, recovery codes, or keys in an unusual format. It is a safety net, not a guarantee.
 
-**Notes are not filtered.** If you wrote a password or a key in a note, the dashboard shows it, and the MCP can hand the first part of a project note to Claude. Don't keep secrets in notes Beryl reads: use a password manager.
+**Notes are not filtered.** If you wrote a password or a key in a note, the dashboard shows it, a file made with `build` carries it, and the MCP can hand the first part of a project note to Claude. Don't keep secrets in notes Beryl reads: use a password manager.
 
 **Where information goes.** Beryl itself makes no network calls and sends nothing anywhere. But what the MCP returns to Claude (a project note, titles and summaries) becomes part of that Claude Code session, which Claude Code sends to Anthropic like everything else in the session. To keep something out of it:
 
