@@ -63,7 +63,12 @@ class ServerTest(unittest.TestCase):
         self.assertNotIn("http", headers["Content-Security-Policy"])
 
     def test_bad_requests_get_an_answer(self):
-        self.assertEqual(self.request("GET", "/nope.txt")[0], 404)
+        status, headers, body = self.request("GET", "/nope.txt<b>")
+        self.assertEqual(status, 404)
+        self.assertIn("text/html", headers["Content-Type"])
+        self.assertIn(b"404", body)
+        self.assertNotIn(b"<b>", body)                                        # the path is shown escaped
+        self.assertEqual(self.request("GET", "/api/nope")[2][:1], b"{")       # the API keeps answering in JSON
         self.assertEqual(self.request("GET", "/index.html%00.png")[0], 404)
         self.assertEqual(self.request("GET", "/fonts/")[0], 404)              # no folder listing
         self.assertEqual(self.request("GET", "/%2e%2e/beryl.py")[0], 404)

@@ -32,6 +32,7 @@ import time
 import webbrowser
 import zipfile
 from pathlib import Path
+from html import escape as html_escape
 from urllib.parse import parse_qs, unquote as url_unquote, urlparse
 
 ROOT = Path(__file__).resolve().parent
@@ -938,6 +939,26 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
+
+    def send_error(self, code, message=None, explain=None):
+        """A page that doesn't exist gets Beryl's own 404 page (themed in the browser from the dashboard's setting)."""
+        if code != 404:
+            return super().send_error(code, message, explain)
+        if self.path.startswith("/api/"):
+            return self.send_json({"error": "Route not found."}, 404)
+        shown = url_unquote(urlparse(self.path).path)[:80].replace("\x00", "")
+        page = (WEB / "404.html").read_text(encoding="utf-8")
+        for key, text in {"lang": LANG, "title": tr("notfound_title"), "msg": tr("notfound_msg"), "back": tr("notfound_back"),
+                          "crt_error": tr("notfound_crt_error"), "crt_msg": tr("notfound_crt_msg"), "path": shown}.items():
+            page = page.replace("{{" + key + "}}", html_escape(text))
+        body = page.encode("utf-8")
+        self.send_response(404)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Connection", "close")
+        self.end_headers()
+        if self.command != "HEAD":
+            self.wfile.write(body)
 
     def list_directory(self, path):
         self.send_error(404)                     # the site's folders are not listed
