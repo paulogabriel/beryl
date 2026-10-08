@@ -273,6 +273,10 @@ scripts/release.sh X.Y.Z                 # on main: tests, plugin validation, ve
 
 Changes go in `CHANGELOG.md` under `## Unreleased`. Tests run on macOS and Linux, Python 3.9 and 3.13, on every pull request.
 
+## Credits
+
+- **Fonts:** IBM Plex Sans and Mono, Newsreader, VT323 and Doto, under the SIL Open Font License (the licenses are in `web/fonts`).
+
 ## License
 
 MIT
