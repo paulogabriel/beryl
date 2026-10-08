@@ -272,5 +272,6 @@
     };
   }
 
-  window.Galaxy = {mount};
+  /* the geometry is shared with the flat CRT view (galaxy-crt.js), so both place every star in the same spot */
+  window.Galaxy = {mount, geometry: {layout, spiral, R_MIN, R_MAX, R_HUB, ARM_START, ARM_END}};
 })();

@@ -435,14 +435,16 @@ function drawGraph(){
     }
   }
   if (g3){ g3.mode = mode; if (view) g3.setView(view); }
-  $("ghint").textContent = t("hint_" + mode);
+  $("ghint").textContent = t(mode === "galaxy" && isCrt() ? "hint_galaxy_crt" : "hint_" + mode);
   renderLegend(); markGraph();
 }
 /* what a screen reader hears for the focused star: name, kind, area and date */
 const describe = n => [n.title, t("kind_" + (n.project ? "project" : n.kind === "chat" || n.kind === "code" ? n.kind : "note")),
   n.area && areaName(n.area), n.last && t("date", {d: n.last.slice(8, 10), m: n.last.slice(5, 7)})].filter(Boolean).join(", ");
+/* the CRT themes draw the Galaxy as a flat instrument screen (galaxy-crt.js); the other themes keep the 3D one */
+const isCrt = () => (document.documentElement.dataset.theme || "").startsWith("crt");
 function mountGalaxy(box){
-  return Galaxy.mount(box, {label: t("label_galaxy"), describe, notes: DATA, areas: areasOf(projects.concat(DATA.filter(n => isConv(n) && n.area)), n => n.area || ""), coreId: META.galaxyCore, color: nodeColor,
+  return (isCrt() && window.GalaxyCRT ? GalaxyCRT : Galaxy).mount(box, {label: t("label_galaxy"), describe, notes: DATA, areas: areasOf(projects.concat(DATA.filter(n => isConv(n) && n.area)), n => n.area || ""), coreId: META.galaxyCore, color: nodeColor,
     showDaily: gState.daily, showChats: gState.chats, spin: gState.spin, latestId: latestConvId(), sonar: gState.sonar, onClick: id => openNote(id)});
 }
 function mount3d(box){

@@ -141,6 +141,11 @@
     "theme_auto": "Dashboard Automatic",
     "theme_light": "Dashboard Light",
     "theme_dark": "Dashboard Dark",
+    "hint_galaxy_crt": "each arm is an area · wheel zooms, drag moves · click or use the arrow keys",
+    "crt_no_sel": "No selection",
+    "crt_no_sel_hint": "Hover a mark or use the arrow keys.",
+    "mark_filled": "filled: active",
+    "mark_hollow": "hollow: not active",
     "months": [
       "Jan",
       "Feb",
