@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.11.2 (2026-10-07)
+
 - Galaxy: the mist along the arms is half as opaque, so it reads as a light haze.
 - Galaxy: the core no longer has the dotted bulge around it, only its glow.
 
