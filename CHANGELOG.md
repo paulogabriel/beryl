@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- README: the install section is now a step-by-step guide (requirements, install, options, getting the claude.ai export, first run, update and uninstall) with a troubleshooting table, in English and Portuguese; the Language option was missing from the options table.
+
 - CRT Galaxy: the legend is now a panel, like the readout, so it stays readable over the grid.
 
 ## 0.12.1 (2026-10-08)
