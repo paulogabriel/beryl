@@ -592,6 +592,7 @@ function renderAll(){
 }
 
 /* ---------- load and follow the data ---------- */
+const berylReady = () => { window.__berylReady = true; };    // the boot screen (boot.js) waits for this
 let version = null, stopped = false;
 async function load(){
   if (window.BERYL_DATA){ index(window.BERYL_DATA); return; }
@@ -613,12 +614,13 @@ async function poll(){
 
 (async () => {
   try { await load(); }
-  catch (e){ $("meta").textContent = (e && e.shown) || t("load_error"); return; }
+  catch (e){ $("meta").textContent = (e && e.shown) || t("load_error"); berylReady(); return; }
   renderAll(); foldSide();
   const gm = store.get("beryl-gmode");
   if (gm === "2d" || gm === "3d" || gm === "galaxy") gState.mode = gm;      // Galaxy unless another view was chosen
   press("gmode", x => x.dataset.m === gState.mode);
   const tab = store.get("beryl-tab");
   show(TABS.includes(tab) ? tab : "painel");
+  berylReady();
   if (META.editable){ poll(); setInterval(poll, 3000); }
 })();

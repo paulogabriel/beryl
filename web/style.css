@@ -367,7 +367,7 @@ button.tl-row:hover{background:var(--surface-2)}
   .mainc,.support{display:contents}
   .conf{order:0}
   .controls{order:1}
-  .statusbar{order:2;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
+  .statusbar{order:2;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;align-self:stretch}   /* as wide as the screen, so it scrolls inside instead of widening the page */
   .sbtn{flex:none}
   .sbhint{display:none}
   .listarea{order:3}
@@ -511,3 +511,31 @@ button.tl-row:hover{background:var(--surface-2)}
 .gcrt .gg.circ{border-radius:50%}.gcrt .gg.tri{border:0;background:var(--fg);clip-path:polygon(50% 0,100% 100%,0 100%)}
 .gcrt .gg.fill{background:var(--fg)}.gcrt .gg.ring{border-radius:50%;border-style:dashed;width:15px;height:15px}
 @media (max-width:760px){.gcrt .gl{display:none}.gcrt .gr{width:190px;font-size:16px}}
+
+/* ---------- boot screen (CRT themes, once per tab; see boot.js) ---------- */
+#boot{display:none}
+html[data-boot="on"] body{overflow:hidden}
+html[data-boot="on"] #boot{display:grid;position:fixed;inset:0;z-index:40;place-items:center;background:var(--bg);overflow:hidden;color:var(--fg)}
+#boot::after{content:"";position:absolute;left:0;right:0;top:-22%;height:20%;pointer-events:none;background:linear-gradient(transparent,color-mix(in srgb,var(--fg) 8%,transparent),transparent);animation:boot-roll 5.5s linear infinite}
+.boot-screen{width:min(520px,calc(100% - 48px));display:grid;gap:16px;text-shadow:var(--glow);animation:boot-on .6s cubic-bezier(.2,.8,.2,1) both,boot-flicker 4.3s steps(1) .7s infinite,boot-jitter 6s steps(1) infinite}
+.boot-logo{height:clamp(46px,9vw,72px);animation:boot-logo 1.2s steps(1) .55s both}
+.boot-logo .logo{height:100%;width:auto}
+.boot-log{min-height:6.2em;font-size:19px;line-height:1.25;color:var(--muted);white-space:pre}
+.boot-log b{color:var(--fg);font-weight:400}
+.boot-log .rdy{color:var(--hot,var(--fg))}
+.boot-log::after{content:"";display:inline-block;width:.55em;height:1em;margin-left:2px;vertical-align:-.12em;background:var(--fg);animation:boot-blink 1s steps(1) infinite}
+.boot-meta{display:flex;justify-content:space-between;font-size:17px;color:var(--muted);letter-spacing:.1em}
+.boot-pct{color:var(--fg)}
+.boot-bar{height:22px;border:1px solid var(--line-2);padding:3px}
+.boot-fill{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,var(--fg) 0 9px,transparent 9px 12px);box-shadow:0 0 10px color-mix(in srgb,var(--fg) 45%,transparent);transition:width .1s steps(2)}
+.boot-skip{font-size:14px;letter-spacing:.14em;color:var(--faint);text-align:center;animation:boot-blink 1.6s steps(1) 1.2s infinite}
+#boot.boot-out{animation:boot-off .5s ease-in forwards}
+.wrap.crt-on{animation:crt-in .6s ease-out both}
+@keyframes boot-on{0%{opacity:0;transform:scale(1,.004);filter:brightness(7)}12%{opacity:1;transform:scale(1,.004);filter:brightness(7)}100%{opacity:1;transform:none;filter:none}}
+@keyframes boot-flicker{0%,90%,96%,100%{opacity:1}92%{opacity:.88}94%{opacity:.96}}
+@keyframes boot-jitter{0%,30%,34%,70%,74%,100%{translate:0 0}32%{translate:1px 0}72%{translate:-1px 0}}
+@keyframes boot-logo{0%{opacity:0}8%{opacity:1}13%{opacity:.15}22%{opacity:1}30%{opacity:.5}40%,100%{opacity:1}}
+@keyframes boot-roll{from{top:-22%}to{top:112%}}
+@keyframes boot-blink{50%{opacity:0}}
+@keyframes boot-off{0%{opacity:1;transform:none;filter:none}55%{opacity:1;transform:scale(1,.012);filter:brightness(6)}100%{opacity:0;transform:scale(0,.012);filter:brightness(6)}}
+@keyframes crt-in{0%{opacity:0;filter:brightness(2.4) blur(3px)}100%{opacity:1;filter:none}}

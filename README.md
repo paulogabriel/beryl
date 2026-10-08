@@ -23,7 +23,7 @@ It shows them in your browser, on your own machine:
 
 <img src="docs/dashboard-crt.jpg" alt="The dashboard: projects by area, with status, origin and conversations">
 
-**Themes.** The list at the top right has five looks: **CRT Beryl** (the default) and **CRT Amber**, phosphor on black with scanlines, terminal type and a glowing logo; and **Dashboard Automatic**, **Light** and **Dark**, which follow your system or your choice. The Galaxy takes the phosphor of the CRT themes. The choice stays in your browser.
+**Themes.** The list at the top right has five looks: **CRT Beryl** (the default) and **CRT Amber**, phosphor on black with scanlines, terminal type and a glowing logo; and **Dashboard Automatic**, **Light** and **Dark**, which follow your system or your choice. The Galaxy takes the phosphor of the CRT themes. The choice stays in your browser. In the CRT themes Beryl starts with a short boot screen (logo, check lines and a loading bar that reaches 100% when the data is ready), once per browser tab; any key or click skips it, and it is left out if your system asks for reduced motion.
 
 <table><tr>
 <td><img src="docs/galaxy-amber.jpg" alt="The Galaxy in the CRT Amber theme"></td>
@@ -272,6 +272,10 @@ scripts/release.sh X.Y.Z                 # on main: tests, plugin validation, ve
 ```
 
 Changes go in `CHANGELOG.md` under `## Unreleased`. Tests run on macOS and Linux, Python 3.9 and 3.13, on every pull request.
+
+## Credits
+
+- **Fonts:** IBM Plex Sans and Mono, Newsreader, VT323 and Doto, under the SIL Open Font License (the licenses are in `web/fonts`).
 
 ## License
 

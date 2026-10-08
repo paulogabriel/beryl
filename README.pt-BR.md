@@ -22,7 +22,7 @@ E mostra tudo no navegador, na sua própria máquina:
 
 <img src="docs/dashboard-crt.jpg" alt="O painel: projetos por área, com status, origem e conversas">
 
-**Temas.** A lista no canto superior direito tem cinco visuais: **CRT Berilo** (o padrão) e **CRT Âmbar**, fósforo sobre preto com linhas de varredura, fonte de terminal e logo brilhante; e **Dashboard Automático**, **Claro** e **Escuro**, que seguem o sistema ou a sua escolha. A Galaxy assume o fósforo dos temas CRT. A escolha fica no seu navegador.
+**Temas.** A lista no canto superior direito tem cinco visuais: **CRT Berilo** (o padrão) e **CRT Âmbar**, fósforo sobre preto com linhas de varredura, fonte de terminal e logo brilhante; e **Dashboard Automático**, **Claro** e **Escuro**, que seguem o sistema ou a sua escolha. A Galaxy assume o fósforo dos temas CRT. A escolha fica no seu navegador. Nos temas CRT o Beryl abre com uma tela de boot curta (logo, linhas de verificação e uma barra de carregamento que chega a 100% quando os dados estão prontos), uma vez por aba do navegador; qualquer tecla ou clique pula, e ela não aparece se o sistema pedir menos movimento.
 
 <table><tr>
 <td><img src="docs/galaxy-amber.jpg" alt="A Galaxy no tema CRT Âmbar"></td>
@@ -271,6 +271,10 @@ scripts/release.sh X.Y.Z                 # na main: testes, validação do plugi
 ```
 
 As mudanças vão no `CHANGELOG.md`, em `## Unreleased`. Os testes rodam no macOS e no Linux, Python 3.9 e 3.13, a cada pull request.
+
+## Créditos
+
+- **Fontes:** IBM Plex Sans e Mono, Newsreader, VT323 e Doto, sob a SIL Open Font License (as licenças estão em `web/fonts`).
 
 ## Licença
 
