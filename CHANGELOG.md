@@ -6,6 +6,8 @@
 
 - CRT Galaxy: the legend is now a panel, like the readout, so it stays readable over the grid.
 
+- CRT Galaxy: the star under the mouse (or chosen with the keyboard) now draws lines to the notes it is linked to, like the 3D Galaxy; the core note also reaches the arms of its areas.
+
 ## 0.12.1 (2026-10-08)
 
 - A page that doesn't exist now shows Beryl's own 404 page, in the theme chosen in the dashboard: a terminal ("SIGNAL LOST") for the CRT themes and a quiet lost-in-the-galaxy card for the others, in the dashboard's language.

@@ -16,6 +16,7 @@
     const notes = opts.notes.map(n => ({...n}));
     const {byId, armAngle} = G.layout(notes, areas, coreId);
     const items = notes.filter(n => n.pos);
+    const coreAreas = coreId ? [...new Set(byId[coreId].links.map(l => byId[l]).filter(x => x && x.project).map(x => x.area || ""))] : [];
     const neigh = {};
     notes.forEach(n => n.links.forEach(l => { if (!byId[l]) return; (neigh[n.id] = neigh[n.id] || new Set()).add(l); (neigh[l] = neigh[l] || new Set()).add(n.id); }));
 
@@ -99,6 +100,15 @@
         if (!small || lit){ const r = G.R_MAX * 1.16, th = G.spiral(r, armAngle(a)), [tx, ty] = project(Math.cos(th) * r, Math.sin(th) * r);
           ctx.fillStyle = lit ? P.hot : P.muted; ctx.fillText(areaName(a).toUpperCase(), clamp(tx, 60, W - 60), clamp(ty, 14, H - 14)); }
       });
+
+      /* 2b. links: from the star under the mouse (or chosen) to the notes it is linked to; the core also reaches its areas' arms */
+      if (act && act.pos){
+        const [ax, ay] = project(act.pos[0], act.pos[2]);
+        ctx.strokeStyle = P.hot; ctx.lineWidth = 1.2; ctx.globalAlpha = .75; ctx.shadowColor = P.fg; ctx.shadowBlur = 5; ctx.beginPath();
+        near.forEach(id => { const o = byId[id]; if (!o || !o.pos || !visible(o)) return; const [x, y] = project(o.pos[0], o.pos[2]); ctx.moveTo(ax, ay); ctx.lineTo(x, y); });
+        if (act.id === coreId) coreAreas.forEach(a => { const th = G.spiral(G.ARM_START, armAngle(a)), [x, y] = project(Math.cos(th) * G.ARM_START, Math.sin(th) * G.ARM_START); ctx.moveTo(ax, ay); ctx.lineTo(x, y); });
+        ctx.stroke(); ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+      }
 
       /* 3. conversations: small squares along the arms */
       const sq = zoom > 2.5 ? 3 : 2;
