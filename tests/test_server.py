@@ -58,8 +58,11 @@ class ServerTest(unittest.TestCase):
         self.assertIn(b"<title>", body)
         self.assertIn("frame-ancestors 'none'", headers["Content-Security-Policy"])
         self.assertEqual(headers["X-Frame-Options"], "DENY")
-        # "nothing leaves your machine": no outside address in the page or in the policy
-        self.assertNotIn(b"https://", body)
+        # "nothing leaves your machine": no outside address in the page or in the policy,
+        # except the footer's link to the repository (a link to click: nothing is loaded from it)
+        repo = b'<a href="https://github.com/paulogabriel/beryl" target="_blank" rel="noopener noreferrer"'
+        self.assertEqual(body.count(repo), 1)
+        self.assertNotIn(b"https://", body.replace(repo, b""))
         self.assertNotIn("http", headers["Content-Security-Policy"])
 
     def test_bad_requests_get_an_answer(self):

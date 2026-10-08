@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- The dashboard has a footer: "© 2026 Beryl - Created by Paulo Antunes and Claude" (in the dashboard's language) and a link to the repository with the GitHub icon, in every theme.
+
 - Options: the README and the "no source configured" screen now point to `/plugin configure beryl@beryl` (what Claude Code itself says) instead of `/config`, and the README explains that an install from the terminal doesn't ask for the options.
 
 ## 0.12.3 (2026-10-08)

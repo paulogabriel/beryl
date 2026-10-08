@@ -310,6 +310,11 @@ button.tl-row:hover{background:var(--surface-2)}
 .tl-bar.q{background-image:repeating-linear-gradient(135deg,transparent 0 4px,rgba(0,0,0,.22) 4px 7px)}
 .tl-today{position:absolute;top:0;bottom:0;border-left:1px dashed var(--c);pointer-events:none}
 .tl-note{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:12px;color:var(--faint);font-size:12px}
+.foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 24px;margin-top:40px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+.foot a{display:inline-flex;align-items:center;gap:7px;color:inherit;text-decoration:none}
+.foot a:hover,.foot a:focus-visible{color:var(--fg)}
+.foot svg{flex:none}
+:root[data-theme^="crt"] .foot{font-size:16px}
 .tl-note span{display:inline-flex;gap:8px;align-items:center}
 .tl-note i{display:inline-block;width:22px;height:10px;border-radius:99px;background:var(--ok)}
 .tl-note i.q{background-image:repeating-linear-gradient(135deg,transparent 0 4px,rgba(0,0,0,.22) 4px 7px)}

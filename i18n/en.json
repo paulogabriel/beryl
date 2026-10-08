@@ -70,6 +70,7 @@
     "err_save": "Could not save.",
     "expand_all": "Expand all",
     "folder": "Folder",
+    "footer_created": "Created by Paulo Antunes and Claude",
     "graph_label": "Graph of notes and links",
     "hint_2d": "hover to see neighbors · click to open",
     "hint_3d": "drag to rotate · scroll to zoom · click or use the arrow keys",
