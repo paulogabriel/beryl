@@ -231,8 +231,10 @@ function inline(s){
   s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*])\*([^*\s][^*]*)\*/g, "$1<em>$2</em>");
   return s;
 }
+/* Obsidian comments are dropped; repeated until none is left, so a comment inside another can't leave a "<!--" behind (what is shown is escaped anyway) */
+function dropComments(s){ let prev; do { prev = s; s = s.replace(/<!--[\s\S]*?-->/g, ""); } while (s !== prev); return s; }
 function md(src){
-  const L = src.replace(/<!--[\s\S]*?-->/g, "").split("\n"); let h = "", i = 0;
+  const L = dropComments(src).split("\n"); let h = "", i = 0;
   while (i < L.length){
     const l = L[i];
     if (/^#{1,4} /.test(l)){ const k = l.match(/^#+/)[0].length; h += `<h${k}>${inline(l.slice(k + 1))}</h${k}>`; i++; continue; }
