@@ -69,13 +69,22 @@ Claude Code asks for the plugin options. Everything is optional: if you accept t
 | Option | What it does |
 |---|---|
 | Read Claude Code sessions | Show your Claude Code sessions and group them into projects. On by default. |
-| claude.ai data export | The `.zip` from claude.ai (Settings › Privacy › Export data), its `conversations.json`, or a folder such as Downloads (the newest export there is used). |
+| claude.ai data export | The `.zip` from claude.ai (Settings › Privacy › Export data), its `conversations.json`, or a folder that holds exports (the newest one is used). Keep it somewhere safe: see below. |
 | Notes folder | An Obsidian vault or any folder of markdown notes. |
 | Language | `auto` (your system's), `en` or `pt`. Other languages fall back to English. |
 | Write to project notes | Let Beryl change the status of project notes and add session summaries to them. Off by default: summaries then stay in Beryl's own data. |
 | Beryl only in my projects | Claude sessions get Beryl's context only in your projects' folders and in the notes folder, not in repositories cloned from others. Off by default. |
 
-**Getting your claude.ai export.** On claude.ai, open Settings › Privacy › Export data. claude.ai emails you a download link (the link expires, so download it soon). Save the `.zip` anywhere, such as Downloads, and give Beryl that file or the folder. Without the export, Beryl still works; you just won't see your claude.ai conversations. The export is a snapshot, so ask for a new one now and then: the dashboard warns when the newest conversation is older than 14 days.
+**Getting your claude.ai export.** On claude.ai, open Settings › Privacy › Export data. claude.ai emails you a download link (the link expires, so download it soon). Then keep it somewhere safe (see below) and give Beryl that file or its folder. Without the export, Beryl still works; you just won't see your claude.ai conversations. The export is a snapshot, so ask for a new one now and then: the dashboard warns when the newest conversation is older than 14 days.
+
+**Keep the export somewhere safe.** The export has the full text of every conversation you ever had on claude.ai, so treat it like a password file. Beryl only reads it, on your machine; the risk is where you leave it.
+
+- Move the `.zip` out of Downloads into a folder only you use, such as `~/Private/claude-export`, and lock it with `chmod 700 ~/Private/claude-export`. Downloads is a busy place: browsers, apps and sites drop files there.
+- Don't put it in a git repository, in a folder shared with other people, or in a synced folder that others can open.
+- Keep disk encryption on (FileVault on macOS, LUKS on Linux), so the file stays unreadable if the computer is lost.
+- Point Beryl at that `.zip` (or at that folder), not at Downloads.
+- When you ask for a newer export, replace the old one and delete it, so old copies don't pile up.
+- Never share the `.zip` or the file from `build` (see "Privacy and security").
 
 ### 3. Start a new Claude Code session
 
